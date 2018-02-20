@@ -12,7 +12,7 @@ pub struct Node {
 }
 
 //スタートのコストを0とすること
-pub fn dijsktra(mut nodes: Vec<Node>) -> Vec<Node> {
+pub fn dijsktra(nodes: &mut Vec<Node>) {
   let done_node = nodes
     .clone()
     .into_iter()
@@ -34,6 +34,7 @@ pub fn dijsktra(mut nodes: Vec<Node>) -> Vec<Node> {
     .map(|(i, _)| i);
 
   if let Some(done_node) = done_node {
+    nodes[done_node].done = true;
     for edge in nodes[done_node].edges.clone() {
       let cost = nodes[done_node].cost.unwrap() + edge.cost;
       if nodes[edge.to]
@@ -44,9 +45,8 @@ pub fn dijsktra(mut nodes: Vec<Node>) -> Vec<Node> {
         nodes[edge.to].cost = Some(cost);
       }
     }
-    dijsktra(nodes)
-  } else {
-    nodes
+
+    dijsktra(nodes);
   }
 }
 
