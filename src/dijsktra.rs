@@ -1,6 +1,6 @@
 #[derive(PartialEq, Debug, Clone)]
 pub struct Edges {
-  to: Node,
+  to: usize,
   cost: i32,
 }
 
@@ -12,8 +12,8 @@ pub struct Node {
 }
 
 //スタートのコストを0とすること
-pub fn dijsktra(nodes: Vec<Node>) -> Vec<Node> {
-  let done = nodes
+pub fn dijsktra(mut nodes: Vec<Node>) -> Vec<Node> {
+  let done_node = nodes
     .clone()
     .into_iter()
     .enumerate()
@@ -31,40 +31,20 @@ pub fn dijsktra(nodes: Vec<Node>) -> Vec<Node> {
         _ => None,
       },
     })
-    .map(|(i, done_node)| {
-      (
-        i,
-        Node {
-          done: true,
-          edges: done_node
-            .edges
-            .clone()
-            .into_iter()
-            .map(|edge| {
-              let cost = done_node.cost.unwrap() + edge.cost;
-              if edge.to.cost.map(|to_cost| cost < to_cost).unwrap_or(true) {
-                Edges {
-                  to: Node {
-                    cost: Some(cost),
-                    ..edge.to
-                  },
-                  ..edge
-                }
-              } else {
-                edge
-              }
-            })
-            .collect::<Vec<_>>(),
-          ..done_node
-        },
-      )
-    });
-  if let Some((i, done)) = done {
-    dijsktra({
-      let mut n = nodes;
-      n[i] = done;
-      n
-    })
+    .map(|(i, _)| i);
+
+  if let Some(done_node) = done_node {
+    for edge in nodes[done_node].edges.clone() {
+      let cost = nodes[done_node].cost.unwrap() + edge.cost;
+      if nodes[edge.to]
+        .cost
+        .map(|to_cost| cost < to_cost)
+        .unwrap_or(true)
+      {
+        nodes[edge.to].cost = Some(cost);
+      }
+    }
+    dijsktra(nodes)
   } else {
     nodes
   }
