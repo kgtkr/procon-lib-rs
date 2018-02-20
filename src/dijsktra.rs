@@ -1,3 +1,6 @@
+use std::cmp::Ordering;
+use std::collections::BinaryHeap;
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct Edge {
   pub to: usize,
@@ -18,6 +21,24 @@ impl Node {
   }
 }
 
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub struct State {
+  cost: i32,
+  node: usize,
+}
+
+impl Ord for State {
+  fn cmp(&self, other: &State) -> Ordering {
+    other.cost.cmp(&self.cost)
+  }
+}
+
+impl PartialOrd for State {
+  fn partial_cmp(&self, other: &State) -> Option<Ordering> {
+    Some(self.cmp(other))
+  }
+}
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct Node {
   pub edges: Vec<Edge>,
@@ -26,24 +47,8 @@ pub struct Node {
 }
 
 //スタートのコストを0とすること
-pub fn dijsktra(nodes: &mut Vec<Node>) {
-  let done_node = nodes
-    .clone()
-    .into_iter()
-    .enumerate()
-    .filter(|&(_, ref x)| !x.done)
-    .fold(None::<(usize, Node)>, |min, x| {
-      Some(
-        min
-          .map(|min| match (x.1.cost, min.1.cost) {
-            (Option::Some(_), Option::None) => x.clone(),
-            (Option::Some(x_cost), Option::Some(min_cost)) if x_cost < min_cost => x.clone(),
-            _ => min,
-          })
-          .unwrap_or(x),
-      )
-    })
-    .map(|(i, _)| i);
+pub fn dijsktra(nodes: &mut Vec<Node>, heap: &mut BinaryHeap<State>) {
+  let done_node = heap.pop().map(|State { node, cost: _ }| node);
 
   if let Some(done_node) = done_node {
     nodes[done_node].done = true;
@@ -55,10 +60,14 @@ pub fn dijsktra(nodes: &mut Vec<Node>) {
         .unwrap_or(true)
       {
         nodes[edge.to].cost = Some(cost);
+        heap.push(State {
+          node: edge.to,
+          cost: cost,
+        });
       }
     }
 
-    dijsktra(nodes);
+    dijsktra(nodes, heap);
   }
 }
 
@@ -68,6 +77,9 @@ mod tests {
 
   #[test]
   fn test1() {
+    let mut heap = BinaryHeap::new();
+    heap.push(State { cost: 0, node: 0 });
+
     let mut nodes = vec![
       Node::new(vec![Edge { to: 2, cost: 10 }, Edge { to: 1, cost: 1 }]),
       Node::new(vec![Edge { to: 3, cost: 2 }]),
@@ -81,7 +93,7 @@ mod tests {
     ];
 
     nodes[0].set_start();
-    dijsktra(&mut nodes);
+    dijsktra(&mut nodes, &mut heap);
 
     assert_eq!(
       vec![
