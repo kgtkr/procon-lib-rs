@@ -7,6 +7,7 @@ pub struct Node {
   pub edges: Vec<graph::Edge>,
   pub done: bool,
   pub cost: Option<i32>,
+  pub before: Option<usize>,
 }
 
 impl Node {
@@ -15,6 +16,7 @@ impl Node {
       edges: node.edges,
       done: false,
       cost: None,
+      before: None,
     }
   }
 
@@ -23,6 +25,7 @@ impl Node {
   }
 }
 
+#[derive(PartialEq, Debug, Clone)]
 pub struct Dijsktra {
   pub nodes: Vec<Node>,
 }
@@ -66,6 +69,7 @@ impl Dijsktra {
           .unwrap_or(true)
         {
           self.nodes[edge.to].cost = Some(cost);
+          self.nodes[edge.to].before = Some(done_node);
           heap.push(State {
             node: edge.to,
             cost: cost,
@@ -75,6 +79,18 @@ impl Dijsktra {
 
       self.dijsktra_r(heap);
     }
+  }
+
+  pub fn path(&self, goal: usize) -> Vec<usize> {
+    let mut path = Vec::new();
+    path.push(goal);
+    let mut current = goal;
+    while let Some(node) = self.nodes[current].before {
+      path.push(node);
+      current = node;
+    }
+    path.reverse();
+    path
   }
 }
 
@@ -130,5 +146,11 @@ mod tests {
     assert_eq!(Some(10), dij.cost(node2));
     assert_eq!(Some(3), dij.cost(node3));
     assert_eq!(Some(5), dij.cost(node4));
+
+    assert_eq!(vec![node0], dij.path(node0));
+    assert_eq!(vec![node0, node1], dij.path(node1));
+    assert_eq!(vec![node0, node2], dij.path(node2));
+    assert_eq!(vec![node0, node1, node3], dij.path(node3));
+    assert_eq!(vec![node0, node1, node3, node4], dij.path(node4));
   }
 }
