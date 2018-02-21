@@ -23,13 +23,13 @@ impl Node {
   }
 }
 
-pub struct Graph {
+pub struct Dijsktra {
   pub nodes: Vec<Node>,
 }
 
-impl Graph {
-  pub fn new(nodes: graph::NodeArena) -> Graph {
-    Graph {
+impl Dijsktra {
+  pub fn new(nodes: graph::NodeArena) -> Dijsktra {
+    Dijsktra {
       nodes: nodes
         .arena
         .into_iter()
@@ -121,14 +121,14 @@ mod tests {
     arena.add_edge(node3, node0, 7);
     arena.add_edge(node3, node4, 2);
 
-    let mut graph = Graph::new(arena);
+    let mut dij = Dijsktra::new(arena);
 
-    graph.dijsktra(node0);
+    dij.dijsktra(node0);
 
-    assert_eq!(Some(0), graph.cost(node0));
-    assert_eq!(Some(1), graph.cost(node1));
-    assert_eq!(Some(10), graph.cost(node2));
-    assert_eq!(Some(3), graph.cost(node3));
-    assert_eq!(Some(5), graph.cost(node4));
+    assert_eq!(Some(0), dij.cost(node0));
+    assert_eq!(Some(1), dij.cost(node1));
+    assert_eq!(Some(10), dij.cost(node2));
+    assert_eq!(Some(3), dij.cost(node3));
+    assert_eq!(Some(5), dij.cost(node4));
   }
 }
