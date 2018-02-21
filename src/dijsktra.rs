@@ -1,16 +1,18 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
+use graph;
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct Edge {
-  pub to: usize,
-  pub cost: i32,
+pub struct Node {
+  pub edges: Vec<graph::Edge>,
+  pub done: bool,
+  pub cost: Option<i32>,
 }
 
 impl Node {
-  pub fn new(edges: Vec<Edge>) -> Node {
+  pub fn new(node: graph::Node) -> Node {
     Node {
-      edges: edges,
+      edges: node.edges,
       done: false,
       cost: None,
     }
@@ -21,8 +23,63 @@ impl Node {
   }
 }
 
+pub struct Graph {
+  pub nodes: Vec<Node>,
+}
+
+impl Graph {
+  pub fn new(nodes: graph::NodeArena) -> Graph {
+    Graph {
+      nodes: nodes
+        .arena
+        .into_iter()
+        .map(|node| Node::new(node))
+        .collect::<Vec<_>>(),
+    }
+  }
+
+  pub fn cost(&self, node: graph::NodeId) -> Option<i32> {
+    self.nodes[node].cost
+  }
+
+  pub fn dijsktra(&mut self, start: graph::NodeId) {
+    let mut heap = BinaryHeap::new();
+    heap.push(State {
+      cost: 0,
+      node: start,
+    });
+    self.nodes[start].set_start();
+
+    self.dijsktra_r(&mut heap);
+  }
+  //スタートのコストを0とすること
+  fn dijsktra_r(&mut self, heap: &mut BinaryHeap<State>) {
+    let done_node = heap.pop().map(|State { node, cost: _ }| node);
+
+    if let Some(done_node) = done_node {
+      self.nodes[done_node].done = true;
+      for edge in self.nodes[done_node].edges.clone() {
+        let cost = self.nodes[done_node].cost.unwrap() + edge.cost;
+        if self.nodes[edge.to]
+          .cost
+          .map(|to_cost| cost < to_cost)
+          .unwrap_or(true)
+        {
+          self.nodes[edge.to].cost = Some(cost);
+          heap.push(State {
+            node: edge.to,
+            cost: cost,
+          });
+        }
+      }
+
+      self.dijsktra_r(heap);
+    }
+  }
+}
+
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub struct State {
+struct State {
   cost: i32,
   node: usize,
 }
@@ -39,95 +96,39 @@ impl PartialOrd for State {
   }
 }
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Node {
-  pub edges: Vec<Edge>,
-  pub done: bool,
-  pub cost: Option<i32>,
-}
-
-//スタートのコストを0とすること
-pub fn dijsktra(nodes: &mut Vec<Node>, heap: &mut BinaryHeap<State>) {
-  let done_node = heap.pop().map(|State { node, cost: _ }| node);
-
-  if let Some(done_node) = done_node {
-    nodes[done_node].done = true;
-    for edge in nodes[done_node].edges.clone() {
-      let cost = nodes[done_node].cost.unwrap() + edge.cost;
-      if nodes[edge.to]
-        .cost
-        .map(|to_cost| cost < to_cost)
-        .unwrap_or(true)
-      {
-        nodes[edge.to].cost = Some(cost);
-        heap.push(State {
-          node: edge.to,
-          cost: cost,
-        });
-      }
-    }
-
-    dijsktra(nodes, heap);
-  }
-}
-
 #[cfg(test)]
 mod tests {
   use super::*;
 
   #[test]
   fn test1() {
-    let mut heap = BinaryHeap::new();
-    heap.push(State { cost: 0, node: 0 });
+    let mut arena = graph::NodeArena::new();
+    let node0 = arena.alloc();
+    let node1 = arena.alloc();
+    let node2 = arena.alloc();
+    let node3 = arena.alloc();
+    let node4 = arena.alloc();
 
-    let mut nodes = vec![
-      Node::new(vec![Edge { to: 2, cost: 10 }, Edge { to: 1, cost: 1 }]),
-      Node::new(vec![Edge { to: 3, cost: 2 }]),
-      Node::new(vec![
-        Edge { to: 1, cost: 1 },
-        Edge { to: 3, cost: 3 },
-        Edge { to: 4, cost: 1 },
-      ]),
-      Node::new(vec![Edge { to: 0, cost: 7 }, Edge { to: 4, cost: 2 }]),
-      Node::new(vec![]),
-    ];
+    arena.add_edge(node0, node2, 10);
+    arena.add_edge(node0, node1, 1);
 
-    nodes[0].set_start();
-    dijsktra(&mut nodes, &mut heap);
+    arena.add_edge(node1, node3, 2);
 
-    assert_eq!(
-      vec![
-        Node {
-          edges: vec![Edge { to: 2, cost: 10 }, Edge { to: 1, cost: 1 }],
-          done: true,
-          cost: Some(0),
-        },
-        Node {
-          edges: vec![Edge { to: 3, cost: 2 }],
-          done: true,
-          cost: Some(1),
-        },
-        Node {
-          edges: vec![
-            Edge { to: 1, cost: 1 },
-            Edge { to: 3, cost: 3 },
-            Edge { to: 4, cost: 1 },
-          ],
-          done: true,
-          cost: Some(10),
-        },
-        Node {
-          edges: vec![Edge { to: 0, cost: 7 }, Edge { to: 4, cost: 2 }],
-          done: true,
-          cost: Some(3),
-        },
-        Node {
-          edges: vec![],
-          done: true,
-          cost: Some(5),
-        },
-      ],
-      nodes
-    );
+    arena.add_edge(node2, node1, 1);
+    arena.add_edge(node2, node3, 3);
+    arena.add_edge(node2, node4, 1);
+
+    arena.add_edge(node3, node0, 7);
+    arena.add_edge(node3, node4, 2);
+
+    let mut graph = Graph::new(arena);
+
+    graph.dijsktra(node0);
+
+    assert_eq!(Some(0), graph.cost(node0));
+    assert_eq!(Some(1), graph.cost(node1));
+    assert_eq!(Some(10), graph.cost(node2));
+    assert_eq!(Some(3), graph.cost(node3));
+    assert_eq!(Some(5), graph.cost(node4));
   }
 }
