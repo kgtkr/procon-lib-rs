@@ -1,5 +1,6 @@
 pub mod bfs;
 pub mod dijsktra;
 pub mod graph;
-mod warshall_floyd;
+pub mod warshall_floyd;
 pub mod bound;
+pub mod prime;
