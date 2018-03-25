@@ -40,9 +40,11 @@ macro_rules! values_def {
 
 macro_rules! value {
   //配列
-  //TODO:文字列
-  ($line:expr,[$type:ty]) => {
-    $line.map(|x|x.parse::<$type>().unwrap()).collect::<Vec<_>>()
+  ($line:expr,[$t:tt]) => {
+    $line.map(|x|{
+      let mut iter=::std::iter::once(x);
+      value!(iter,$t)
+    }).collect::<Vec<_>>()
   };
   //タプル
   ($line:expr,($($t:tt),*)) => {
@@ -82,6 +84,7 @@ fn test1() {
     {n;list3:(i64,i64)}
     (i:i64 list4:[i64])
   );
+    assert_eq!(n, 3);
     assert_eq!(k, 5);
     assert_eq!(p, 2);
     assert_eq!(list1, vec![2, 3, 4, 5, 6]);
@@ -90,5 +93,38 @@ fn test1() {
     assert_eq!(list3, vec![(8, 1), (2, 3), (4, 1)]);
     assert_eq!(i, 1283);
     assert_eq!(list4, vec![23, 43, 32]);
+  }
+
+  {
+    input!(
+    "3
+5 2
+2 3 4 5 6
+10
+20
+30
+1 2
+8 1
+2 3
+4 1
+1283 23 43 32
+"=>
+    (n:usize) //単一値
+    (k:# p:#) //複数値
+    (list1:[#]) //配列
+    {n;list2:#} //N回繰り返し
+    (tup:(#,#)) //タプル
+    {n;list3:(#,#)}
+    (i:# list4:[#])
+  );
+    assert_eq!(n, 3);
+    assert_eq!(k, "5");
+    assert_eq!(p, "2");
+    assert_eq!(list1, vec!["2", "3", "4", "5", "6"]);
+    assert_eq!(list2, vec!["10", "20", "30"]);
+    assert_eq!(tup, ("1", "2"));
+    assert_eq!(list3, vec![("8", "1"), ("2", "3"), ("4", "1")]);
+    assert_eq!(i, "1283");
+    assert_eq!(list4, vec!["23", "43", "32"]);
   }
 }
