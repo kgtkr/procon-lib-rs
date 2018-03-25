@@ -60,7 +60,8 @@ macro_rules! value {
 
 #[test]
 fn test1() {
-  input!(
+  {
+    input!(
     "3
 5 2
 2 3 4 5 6
@@ -81,13 +82,13 @@ fn test1() {
     {n;list3:(i64,i64)}
     (i:i64 list4:[i64])
   );
-  /*assert_eq!(k, 5);
-  assert_eq!(p, 2);
-  assert_eq!(list1, vec![2, 3, 4, 5, 6]);
-  assert_eq!(list2, vec![10, 20, 30]);
-  assert_eq!(tup, (1, 2));
-  assert_eq!(list3, vec![(8, 1), (2, 3), (4, 1)]);
-  assert_eq!(i, 1283);
-  assert_eq!(list4, vec![23,43,32]);
-  */
+    assert_eq!(k, 5);
+    assert_eq!(p, 2);
+    assert_eq!(list1, vec![2, 3, 4, 5, 6]);
+    assert_eq!(list2, vec![10, 20, 30]);
+    assert_eq!(tup, (1, 2));
+    assert_eq!(list3, vec![(8, 1), (2, 3), (4, 1)]);
+    assert_eq!(i, 1283);
+    assert_eq!(list4, vec![23, 43, 32]);
+  }
 }
