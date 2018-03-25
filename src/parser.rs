@@ -1,3 +1,4 @@
+#[macro_export]
 macro_rules! input {
   ($s:expr=>$($t:tt)*) => {
     let mut lines=$s.split("\n");
