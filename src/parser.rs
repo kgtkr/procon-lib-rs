@@ -76,6 +76,9 @@ fn test1() {
 2 3
 4 1
 1283 23 43 32
+1 2 3
+2 3 4
+3 4 5
 "=>
     (n:usize) //単一値
     (k:i64 p:i64) //複数値
@@ -84,6 +87,7 @@ fn test1() {
     (tup:(i64,i64)) //タプル
     {n;list3:(i64,i64)}
     (i:i64 list4:[i64])
+    {n;map:[i64]}
   );
     assert_eq!(n, 3);
     assert_eq!(k, 5);
@@ -94,6 +98,7 @@ fn test1() {
     assert_eq!(list3, vec![(8, 1), (2, 3), (4, 1)]);
     assert_eq!(i, 1283);
     assert_eq!(list4, vec![23, 43, 32]);
+    assert_eq!(map, vec![vec![1, 2, 3], vec![2, 3, 4], vec![3, 4, 5]]);
   }
 
   {
