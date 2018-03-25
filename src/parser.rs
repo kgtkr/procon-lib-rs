@@ -55,8 +55,8 @@ macro_rules! value {
     $line.next().unwrap()
   };
   //単一値
-  ($line:expr,$type:ty) => {
-    $line.next().unwrap().parse::<$type>().unwrap()
+  ($line:expr,$t:ty) => {
+    $line.next().unwrap().parse::<$t>().unwrap()
   };
 }
 
