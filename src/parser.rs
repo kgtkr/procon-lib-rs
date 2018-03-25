@@ -2,12 +2,12 @@ macro_rules! input {
   ($s:expr=>$($t:tt)*) => {
     let mut lines=$s.split("\n");
     $(
-        line!(lines,$t);
+        line_parse!(lines,$t);
     )*
   };
 }
 
-macro_rules! line {
+macro_rules! line_parse {
   ($lines:expr,($($name:ident:$t:tt)*)) => {
     let mut line=$lines.next().unwrap().split_whitespace();
     $(value_def!(line,$name,$t);)*
@@ -90,12 +90,4 @@ fn test1() {
   assert_eq!(i, 1283);
   assert_eq!(list4, vec![23,43,32]);
   */
-}
-
-#[test]
-fn test() {
-  //なぜかassert_eq出来ない
-  let a = 3;
-  let b = 1 + 2;
-  assert_eq!(a, b);
 }
