@@ -2,36 +2,7 @@
 
 pub type NodeId = usize;
 
-pub struct NodeArena {
-  pub arena: Vec<Node>,
-}
-
-impl NodeArena {
-  pub fn new() -> NodeArena {
-    NodeArena { arena: Vec::new() }
-  }
-
-  pub fn alloc(&mut self) -> NodeId {
-    let id = self.arena.len();
-    let node = Node {
-      id: id,
-      edges: Vec::new(),
-    };
-    self.arena.push(node);
-    id
-  }
-
-  pub fn add_edge(&mut self, node: NodeId, to: NodeId, cost: i32) {
-    self.arena[node].edges.push(Edge { to: to, cost: cost });
-  }
-
-  pub fn get(&self, id: NodeId) -> &Node {
-    &self.arena[id]
-  }
-  pub fn get_mut(&mut self, id: NodeId) -> &mut Node {
-    &mut self.arena[id]
-  }
-}
+pub type Graph = Vec<Node>;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Node {

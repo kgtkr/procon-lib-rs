@@ -31,10 +31,9 @@ pub struct Dijsktra {
 }
 
 impl Dijsktra {
-  pub fn new(nodes: graph::NodeArena) -> Dijsktra {
+  pub fn new(nodes: graph::Graph) -> Dijsktra {
     Dijsktra {
       nodes: nodes
-        .arena
         .into_iter()
         .map(|node| Node::new(node))
         .collect::<Vec<_>>(),
@@ -118,39 +117,53 @@ mod tests {
 
   #[test]
   fn test1() {
-    let mut arena = graph::NodeArena::new();
-    let node0 = arena.alloc();
-    let node1 = arena.alloc();
-    let node2 = arena.alloc();
-    let node3 = arena.alloc();
-    let node4 = arena.alloc();
+    let mut graph = vec![
+      graph::Node {
+        id: 0,
+        edges: vec![
+          graph::Edge { to: 2, cost: 10 },
+          graph::Edge { to: 1, cost: 1 },
+        ],
+      },
+      graph::Node {
+        id: 1,
+        edges: vec![graph::Edge { to: 3, cost: 2 }],
+      },
+      graph::Node {
+        id: 2,
+        edges: vec![
+          graph::Edge { to: 1, cost: 1 },
+          graph::Edge { to: 3, cost: 3 },
+          graph::Edge { to: 4, cost: 1 },
+        ],
+      },
+      graph::Node {
+        id: 3,
+        edges: vec![
+          graph::Edge { to: 0, cost: 7 },
+          graph::Edge { to: 4, cost: 2 },
+        ],
+      },
+      graph::Node {
+        id: 4,
+        edges: vec![],
+      },
+    ];
 
-    arena.add_edge(node0, node2, 10);
-    arena.add_edge(node0, node1, 1);
+    let mut dij = Dijsktra::new(graph);
 
-    arena.add_edge(node1, node3, 2);
+    dij.dijsktra(0);
 
-    arena.add_edge(node2, node1, 1);
-    arena.add_edge(node2, node3, 3);
-    arena.add_edge(node2, node4, 1);
+    assert_eq!(Some(0), dij.cost(0));
+    assert_eq!(Some(1), dij.cost(1));
+    assert_eq!(Some(10), dij.cost(2));
+    assert_eq!(Some(3), dij.cost(3));
+    assert_eq!(Some(5), dij.cost(4));
 
-    arena.add_edge(node3, node0, 7);
-    arena.add_edge(node3, node4, 2);
-
-    let mut dij = Dijsktra::new(arena);
-
-    dij.dijsktra(node0);
-
-    assert_eq!(Some(0), dij.cost(node0));
-    assert_eq!(Some(1), dij.cost(node1));
-    assert_eq!(Some(10), dij.cost(node2));
-    assert_eq!(Some(3), dij.cost(node3));
-    assert_eq!(Some(5), dij.cost(node4));
-
-    assert_eq!(vec![node0], dij.path(node0));
-    assert_eq!(vec![node0, node1], dij.path(node1));
-    assert_eq!(vec![node0, node2], dij.path(node2));
-    assert_eq!(vec![node0, node1, node3], dij.path(node3));
-    assert_eq!(vec![node0, node1, node3, node4], dij.path(node4));
+    assert_eq!(vec![0], dij.path(0));
+    assert_eq!(vec![0, 1], dij.path(1));
+    assert_eq!(vec![0, 2], dij.path(2));
+    assert_eq!(vec![0, 1, 3], dij.path(3));
+    assert_eq!(vec![0, 1, 3, 4], dij.path(4));
   }
 }

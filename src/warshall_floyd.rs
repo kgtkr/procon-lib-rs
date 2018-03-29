@@ -1,14 +1,14 @@
 use graph;
 
-pub fn warshall_floyd(nodes: graph::NodeArena) -> Vec<Vec<Option<i32>>> {
+pub fn warshall_floyd(nodes: graph::Graph) -> Vec<Vec<Option<i32>>> {
   //初期化
-  let len = nodes.arena.len();
+  let len = nodes.len();
   let mut vec = {
     let mut vec = Vec::with_capacity(len);
     let mut vec2 = Vec::with_capacity(len);
     vec2.resize(len, None);
     vec.resize(len, vec2);
-    for node in nodes.arena {
+    for node in nodes {
       vec[node.id][node.id] = Some(0);
       for edge in node.edges {
         vec[node.id][edge.to] = Some(edge.cost);
@@ -43,26 +43,39 @@ mod tests {
 
   #[test]
   fn test1() {
-    let mut arena = graph::NodeArena::new();
-    let node0 = arena.alloc();
-    let node1 = arena.alloc();
-    let node2 = arena.alloc();
-    let node3 = arena.alloc();
-    let node4 = arena.alloc();
-
-    arena.add_edge(node0, node2, 10);
-    arena.add_edge(node0, node1, 1);
-
-    arena.add_edge(node1, node3, 2);
-
-    arena.add_edge(node2, node1, 1);
-    arena.add_edge(node2, node3, 3);
-    arena.add_edge(node2, node4, 1);
-
-    arena.add_edge(node3, node0, 7);
-    arena.add_edge(node3, node4, 2);
-
-    let min = warshall_floyd(arena);
+    let mut graph = vec![
+      graph::Node {
+        id: 0,
+        edges: vec![
+          graph::Edge { to: 2, cost: 10 },
+          graph::Edge { to: 1, cost: 1 },
+        ],
+      },
+      graph::Node {
+        id: 1,
+        edges: vec![graph::Edge { to: 3, cost: 2 }],
+      },
+      graph::Node {
+        id: 2,
+        edges: vec![
+          graph::Edge { to: 1, cost: 1 },
+          graph::Edge { to: 3, cost: 3 },
+          graph::Edge { to: 4, cost: 1 },
+        ],
+      },
+      graph::Node {
+        id: 3,
+        edges: vec![
+          graph::Edge { to: 0, cost: 7 },
+          graph::Edge { to: 4, cost: 2 },
+        ],
+      },
+      graph::Node {
+        id: 4,
+        edges: vec![],
+      },
+    ];
+    let min = warshall_floyd(graph);
 
     assert_eq!(
       min,
