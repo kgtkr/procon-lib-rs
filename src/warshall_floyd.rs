@@ -1,6 +1,6 @@
 use graph;
 
-pub fn warshall_floyd(nodes: graph::Graph) -> Vec<Vec<Option<i32>>> {
+pub fn warshall_floyd(nodes: graph::Graph) -> Vec<Vec<Option<graph::Cost>>> {
   //初期化
   let len = nodes.len();
   let mut vec = {
@@ -10,8 +10,8 @@ pub fn warshall_floyd(nodes: graph::Graph) -> Vec<Vec<Option<i32>>> {
     vec.resize(len, vec2);
     for (node_id, node) in nodes.into_iter().enumerate() {
       vec[node_id][node_id] = Some(0);
-      for edge in node.edges {
-        vec[node_id][edge.to] = Some(edge.cost);
+      for (edge_to, edge_cost) in node {
+        vec[node_id][edge_to] = Some(edge_cost);
       }
     }
     vec
@@ -44,29 +44,11 @@ mod tests {
   #[test]
   fn test1() {
     let mut graph = vec![
-      graph::Node {
-        edges: vec![
-          graph::Edge { to: 2, cost: 10 },
-          graph::Edge { to: 1, cost: 1 },
-        ],
-      },
-      graph::Node {
-        edges: vec![graph::Edge { to: 3, cost: 2 }],
-      },
-      graph::Node {
-        edges: vec![
-          graph::Edge { to: 1, cost: 1 },
-          graph::Edge { to: 3, cost: 3 },
-          graph::Edge { to: 4, cost: 1 },
-        ],
-      },
-      graph::Node {
-        edges: vec![
-          graph::Edge { to: 0, cost: 7 },
-          graph::Edge { to: 4, cost: 2 },
-        ],
-      },
-      graph::Node { edges: vec![] },
+      vec![(2, 10), (1, 1)],
+      vec![(3, 2)],
+      vec![(1, 1), (3, 3), (4, 1)],
+      vec![(0, 7), (4, 2)],
+      vec![],
     ];
     let min = warshall_floyd(graph);
 

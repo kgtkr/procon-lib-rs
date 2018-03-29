@@ -6,14 +6,14 @@ use graph;
 pub struct Node {
   pub edges: Vec<graph::Edge>,
   pub done: bool,
-  pub cost: Option<i32>,
+  pub cost: Option<graph::Cost>,
   pub before: Option<usize>,
 }
 
 impl Node {
   pub fn new(node: graph::Node) -> Node {
     Node {
-      edges: node.edges,
+      edges: node,
       done: false,
       cost: None,
       before: None,
@@ -40,7 +40,7 @@ impl Dijsktra {
     }
   }
 
-  pub fn cost(&self, node: graph::NodeId) -> Option<i32> {
+  pub fn cost(&self, node: graph::NodeId) -> Option<graph::Cost> {
     self.nodes[node].cost
   }
 
@@ -60,17 +60,17 @@ impl Dijsktra {
 
     if let Some(done_node) = done_node {
       self.nodes[done_node].done = true;
-      for edge in self.nodes[done_node].edges.clone() {
-        let cost = self.nodes[done_node].cost.unwrap() + edge.cost;
-        if self.nodes[edge.to]
+      for (edge_to, edge_cost) in self.nodes[done_node].edges.clone() {
+        let cost = self.nodes[done_node].cost.unwrap() + edge_cost;
+        if self.nodes[edge_to]
           .cost
           .map(|to_cost| cost < to_cost)
           .unwrap_or(true)
         {
-          self.nodes[edge.to].cost = Some(cost);
-          self.nodes[edge.to].before = Some(done_node);
+          self.nodes[edge_to].cost = Some(cost);
+          self.nodes[edge_to].before = Some(done_node);
           heap.push(State {
-            node: edge.to,
+            node: edge_to,
             cost: cost,
           });
         }
@@ -95,8 +95,8 @@ impl Dijsktra {
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 struct State {
-  cost: i32,
-  node: usize,
+  cost: graph::Cost,
+  node: graph::NodeId,
 }
 
 impl Ord for State {
@@ -118,29 +118,11 @@ mod tests {
   #[test]
   fn test1() {
     let mut graph = vec![
-      graph::Node {
-        edges: vec![
-          graph::Edge { to: 2, cost: 10 },
-          graph::Edge { to: 1, cost: 1 },
-        ],
-      },
-      graph::Node {
-        edges: vec![graph::Edge { to: 3, cost: 2 }],
-      },
-      graph::Node {
-        edges: vec![
-          graph::Edge { to: 1, cost: 1 },
-          graph::Edge { to: 3, cost: 3 },
-          graph::Edge { to: 4, cost: 1 },
-        ],
-      },
-      graph::Node {
-        edges: vec![
-          graph::Edge { to: 0, cost: 7 },
-          graph::Edge { to: 4, cost: 2 },
-        ],
-      },
-      graph::Node { edges: vec![] },
+      vec![(2, 10), (1, 1)],
+      vec![(3, 2)],
+      vec![(1, 1), (3, 3), (4, 1)],
+      vec![(0, 7), (4, 2)],
+      vec![],
     ];
 
     let mut dij = Dijsktra::new(graph);

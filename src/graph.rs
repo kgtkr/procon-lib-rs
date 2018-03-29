@@ -2,15 +2,10 @@
 
 pub type NodeId = usize;
 
+pub type Cost = i64;
+
 pub type Graph = Vec<Node>;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Node {
-  pub edges: Vec<Edge>,
-}
+pub type Node = Vec<Edge>;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Edge {
-  pub to: NodeId,
-  pub cost: i32,
-}
+pub type Edge = (NodeId, Cost);
