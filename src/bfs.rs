@@ -1,50 +1,39 @@
-#[derive(PartialEq, Debug, Clone)]
-enum Cell {
-  Wall,
-  Empty,
-  Visited(usize, usize),
-}
-pub fn bfs(m: &Vec<Vec<bool>>) -> Option<Vec<(usize, usize)>> {
-  let mut m = m.iter()
-    .map(|x| {
-      x.iter()
-        .map(|&x| if x { Cell::Empty } else { Cell::Wall })
-        .collect::<Vec<_>>()
-    })
-    .collect::<Vec<_>>();
-  let goal = (m.len() - 1, m[0].len() - 1);
-  let mut n: (usize, usize) = (0, 0);
+use graph;
+
+//graphは全てのコストが等しい
+pub fn bfs(
+  graph: graph::Graph,
+  start: graph::NodeId,
+  goal: graph::NodeId,
+) -> Option<Vec<graph::NodeId>> {
+  let mut visited = Vec::with_capacity(graph.len());
+  visited.resize(graph.len(), None);
+
+  let mut n = 0;
   // Queue に初期値を積む
   let mut queue = vec![n];
   while queue.len() > 0 {
     // queueから取り出す
     n = queue[0];
     queue.remove(0);
-    // 行けるセルとをチェック
-    for d in vec![(1i32, 0i32), (0i32, 1i32), (-1i32, 0i32), (0i32, -1i32)] {
-      let next_x = (n.0 as i32) + d.0;
-      let next_y = (n.1 as i32) + d.1;
-      if next_x >= 0 && next_x <= (goal.0 as i32) && next_y >= 0 && next_y <= (goal.1 as i32) {
-        let next_x = next_x as usize;
-        let next_y = next_y as usize;
+    // 行けるノード
+    for &(next_node, _) in &graph[n] {
+      if visited[next_node].is_none() {
+        visited[next_node] = Some(n);
+        // Queueに積む
+        queue.push(next_node)
+      }
 
-        if m[next_x][next_y] == Cell::Empty {
-          m[next_x][next_y] = Cell::Visited(n.0, n.1);
-          // Queueに積む
-          queue.push((next_x, next_y))
+      if next_node == goal {
+        visited[start] = None;
+        let mut path = vec![goal];
+        let mut c = visited[goal];
+        while let Some(id) = c {
+          path.push(id);
+          c = visited[id];
         }
-
-        if (next_x, next_y) == goal {
-          m[0][0] = Cell::Empty;
-          let mut path = vec![(goal.0, goal.1)];
-          let mut c = &m[goal.0][goal.1];
-          while let &Cell::Visited(x, y) = c {
-            path.push((x, y));
-            c = &m[x][y];
-          }
-          path.reverse();
-          return Some(path);
-        }
+        path.reverse();
+        return Some(path);
       }
     }
   }
@@ -57,33 +46,20 @@ mod tests {
 
   #[test]
   fn test1() {
-    let mut map = vec![
+    let mut maze = vec![
       vec![true, false, true, false, true],
       vec![true, false, true, true, true],
       vec![true, false, true, false, true],
       vec![true, true, true, false, true],
       vec![true, false, true, false, true],
     ];
+    //y*5+x
     assert_eq!(
-      Some(vec![
-        (0, 0),
-        (1, 0),
-        (2, 0),
-        (3, 0),
-        (3, 1),
-        (3, 2),
-        (2, 2),
-        (1, 2),
-        (1, 3),
-        (1, 4),
-        (2, 4),
-        (3, 4),
-        (4, 4),
-      ]),
-      bfs(&map)
+      Some(vec![0, 5, 10, 15, 16, 17, 12, 7, 8, 9, 14, 19, 24]),
+      bfs(graph::maze_to_graph(maze.clone()), 0, 24)
     );
 
-    map[3][1] = false;
-    assert_eq!(None, bfs(&map));
+    maze[3][1] = false;
+    assert_eq!(None, bfs(graph::maze_to_graph(maze.clone()), 0, 24));
   }
 }
