@@ -6,7 +6,6 @@ pub type Graph = Vec<Node>;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Node {
-  pub id: NodeId,
   pub edges: Vec<Edge>,
 }
 

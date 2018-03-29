@@ -119,18 +119,15 @@ mod tests {
   fn test1() {
     let mut graph = vec![
       graph::Node {
-        id: 0,
         edges: vec![
           graph::Edge { to: 2, cost: 10 },
           graph::Edge { to: 1, cost: 1 },
         ],
       },
       graph::Node {
-        id: 1,
         edges: vec![graph::Edge { to: 3, cost: 2 }],
       },
       graph::Node {
-        id: 2,
         edges: vec![
           graph::Edge { to: 1, cost: 1 },
           graph::Edge { to: 3, cost: 3 },
@@ -138,16 +135,12 @@ mod tests {
         ],
       },
       graph::Node {
-        id: 3,
         edges: vec![
           graph::Edge { to: 0, cost: 7 },
           graph::Edge { to: 4, cost: 2 },
         ],
       },
-      graph::Node {
-        id: 4,
-        edges: vec![],
-      },
+      graph::Node { edges: vec![] },
     ];
 
     let mut dij = Dijsktra::new(graph);
