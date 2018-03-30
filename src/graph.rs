@@ -2,6 +2,10 @@ pub type NodeId = usize;
 
 pub type Cost = i64;
 
+pub type Node = Vec<Edge>;
+
+pub type Edge = (NodeId, NodeId, Cost);
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct MatrixGraph(pub Vec<Vec<Option<Cost>>>);
 
@@ -37,10 +41,6 @@ impl From<FlatGraph> for MatrixGraph {
 #[derive(PartialEq, Debug, Clone)]
 pub struct ListGraph(pub Vec<Vec<Edge>>);
 
-pub type Node = Vec<Edge>;
-
-pub type Edge = (NodeId, NodeId, Cost);
-
 impl From<Vec<Vec<(NodeId, Cost)>>> for ListGraph {
   fn from(data: Vec<Vec<(NodeId, Cost)>>) -> ListGraph {
     ListGraph(
@@ -55,6 +55,12 @@ impl From<Vec<Vec<(NodeId, Cost)>>> for ListGraph {
         })
         .collect(),
     )
+  }
+}
+
+impl From<Vec<Vec<Edge>>> for ListGraph {
+  fn from(data: Vec<Vec<Edge>>) -> ListGraph {
+    ListGraph(data)
   }
 }
 
@@ -154,7 +160,7 @@ mod tests {
   use super::*;
 
   #[test]
-  fn test1() {
+  fn maze_to_list() {
     let mut maze = vec![
       vec![true, false, true, false], //0-3
       vec![true, true, true, true],   //4-7
@@ -176,6 +182,24 @@ mod tests {
         vec![],
       ]),
       maze.into()
+    );
+  }
+
+  #[test]
+  fn list_to_matrix() {
+    assert_eq!(
+      MatrixGraph::from(vec![
+        vec![None, Some(1), None, Some(3)],
+        vec![Some(10), Some(1), None, None],
+        vec![None, None, Some(5), None],
+        vec![None, None, None, None],
+      ]),
+      ListGraph::from(vec![
+        vec![(1, 1), (3, 3)],
+        vec![(0, 10), (1, 1)],
+        vec![(2, 5)],
+        vec![],
+      ]).into()
     );
   }
 }
