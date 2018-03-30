@@ -1,8 +1,6 @@
 use graph;
 
-pub fn warshall_floyd(
-  graph::GraphFromNodes(nodes): graph::GraphFromNodes,
-) -> Vec<Vec<Option<graph::Cost>>> {
+pub fn warshall_floyd(graph::ListGraph(nodes): graph::ListGraph) -> Vec<Vec<Option<graph::Cost>>> {
   //初期化
   let len = nodes.len();
   let mut vec = {
@@ -52,7 +50,7 @@ mod tests {
       vec![(0, 7), (4, 2)],
       vec![],
     ];
-    let min = warshall_floyd(graph::GraphFromNodes(graph));
+    let min = warshall_floyd(graph::ListGraph(graph));
 
     assert_eq!(
       min,

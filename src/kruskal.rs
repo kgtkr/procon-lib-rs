@@ -1,3 +1,3 @@
 use graph;
 
-fn kruskal(graph: graph::GraphFromNodes) {}
+fn kruskal(graph: graph::ListGraph) {}

@@ -4,14 +4,14 @@ use graph;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Node {
-  pub edges: Vec<graph::EdgeTo>,
+  pub edges: Vec<graph::Edge>,
   pub done: bool,
   pub cost: Option<graph::Cost>,
   pub before: Option<usize>,
 }
 
 impl Node {
-  pub fn new(node: graph::NodeFrom) -> Node {
+  pub fn new(node: graph::Node) -> Node {
     Node {
       edges: node,
       done: false,
@@ -31,7 +31,7 @@ pub struct Dijsktra {
 }
 
 impl Dijsktra {
-  pub fn new(graph::GraphFromNodes(nodes): graph::GraphFromNodes) -> Dijsktra {
+  pub fn new(graph::ListGraph(nodes): graph::ListGraph) -> Dijsktra {
     Dijsktra {
       nodes: nodes
         .into_iter()
@@ -117,7 +117,7 @@ mod tests {
       vec![],
     ];
 
-    let mut dij = Dijsktra::new(graph::GraphFromNodes(graph));
+    let mut dij = Dijsktra::new(graph::ListGraph(graph));
 
     dij.dijsktra(0);
 

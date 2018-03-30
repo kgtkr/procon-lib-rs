@@ -5,19 +5,22 @@ pub type NodeId = usize;
 pub type Cost = i64;
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct GraphFromNodes(pub Vec<NodeFrom>);
+pub struct ListGraph(pub Vec<Node>);
 
-pub type NodeFrom = Vec<EdgeTo>;
+pub type Node = Vec<Edge>;
 
-pub type EdgeTo = (NodeId, Cost);
+pub type Edge = (NodeId, Cost);
+
+#[derive(PartialEq, Debug, Clone)]
+pub struct FlatGraph(pub Vec<(NodeId, NodeId, Cost)>);
 
 //迷路
 pub type Maze = Vec<Vec<bool>>;
 
 //id=x+y*w
-pub fn maze_to_graph(maze: Maze) -> GraphFromNodes {
+pub fn maze_to_graph(maze: Maze) -> ListGraph {
   if maze.len() == 0 {
-    return GraphFromNodes(Vec::new());
+    return ListGraph(Vec::new());
   }
 
   let h = maze.len();
@@ -46,7 +49,7 @@ pub fn maze_to_graph(maze: Maze) -> GraphFromNodes {
       }
     }
   }
-  GraphFromNodes(graph)
+  ListGraph(graph)
 }
 
 #[cfg(test)]
@@ -61,7 +64,7 @@ mod tests {
       vec![true, false, true, false], //8-11
     ];
     assert_eq!(
-      GraphFromNodes(vec![
+      ListGraph(vec![
         vec![(4, 1)],
         vec![],
         vec![(6, 1)],
