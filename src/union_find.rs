@@ -73,7 +73,7 @@ mod tests {
   #[test]
   fn find() {
     let mut uf = UnionFind(vec![
-      UnionFindNode { par: 0, rank: 0 },
+      UnionFindNode { par: 0, rank: 1 },
       UnionFindNode { par: 0, rank: 0 },
       UnionFindNode { par: 1, rank: 0 },
       UnionFindNode { par: 3, rank: 0 },
@@ -85,7 +85,7 @@ mod tests {
       assert_eq!(0, uf.find(0));
       assert_eq!(
         UnionFind(vec![
-          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 0, rank: 1 },
           UnionFindNode { par: 0, rank: 0 },
           UnionFindNode { par: 1, rank: 0 },
           UnionFindNode { par: 3, rank: 0 },
@@ -100,7 +100,7 @@ mod tests {
       assert_eq!(0, uf.find(1));
       assert_eq!(
         UnionFind(vec![
-          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 0, rank: 1 },
           UnionFindNode { par: 0, rank: 0 },
           UnionFindNode { par: 1, rank: 0 },
           UnionFindNode { par: 3, rank: 0 },
@@ -115,7 +115,7 @@ mod tests {
         assert_eq!(0, uf.find(2));
         assert_eq!(
           UnionFind(vec![
-            UnionFindNode { par: 0, rank: 0 },
+            UnionFindNode { par: 0, rank: 1 },
             UnionFindNode { par: 0, rank: 0 },
             UnionFindNode { par: 0, rank: 0 },
             UnionFindNode { par: 3, rank: 0 },
@@ -131,7 +131,7 @@ mod tests {
       assert_eq!(4, uf.find(4));
       assert_eq!(
         UnionFind(vec![
-          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 0, rank: 1 },
           UnionFindNode { par: 0, rank: 0 },
           UnionFindNode { par: 1, rank: 0 },
           UnionFindNode { par: 3, rank: 0 },
@@ -201,5 +201,20 @@ mod tests {
       ]),
       uf
     );
+  }
+
+  #[test]
+  fn same() {
+    let mut uf = UnionFind(vec![
+      UnionFindNode { par: 0, rank: 0 },
+      UnionFindNode { par: 0, rank: 1 },
+      UnionFindNode { par: 2, rank: 0 },
+      UnionFindNode { par: 3, rank: 0 },
+      UnionFindNode { par: 4, rank: 0 },
+    ]);
+
+    assert_eq!(true, uf.same(0, 1));
+    assert_eq!(true, uf.same(1, 0));
+    assert_eq!(false, uf.same(1, 3));
   }
 }
