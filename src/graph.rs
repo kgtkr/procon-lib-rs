@@ -15,10 +15,11 @@ pub type Edge = (NodeId, Cost);
 pub struct FlatGraph(pub Vec<(NodeId, NodeId, Cost)>);
 
 //迷路
-pub type Maze = Vec<Vec<bool>>;
+#[derive(PartialEq, Debug, Clone)]
+pub struct Maze(pub Vec<Vec<bool>>);
 
 //id=x+y*w
-pub fn maze_to_graph(maze: Maze) -> ListGraph {
+pub fn maze_to_graph(Maze(maze): Maze) -> ListGraph {
   if maze.len() == 0 {
     return ListGraph(Vec::new());
   }
@@ -78,7 +79,7 @@ mod tests {
         vec![(6, 1)],
         vec![],
       ]),
-      maze_to_graph(maze)
+      maze_to_graph(Maze(maze))
     );
   }
 }
