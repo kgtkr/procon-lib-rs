@@ -160,69 +160,43 @@ mod tests {
   use super::*;
 
   #[test]
-  fn maze_to_list() {
-    let mut maze = vec![
-      vec![true, false, true, false], //0-3
-      vec![true, true, true, true],   //4-7
-      vec![true, false, true, false], //8-11
-    ];
-    assert_eq!(
-      ListGraph::from(vec![
-        vec![(4, 1)],
-        vec![],
-        vec![(6, 1)],
-        vec![],
-        vec![(0, 1), (5, 1), (8, 1)],
-        vec![(4, 1), (6, 1)],
-        vec![(2, 1), (5, 1), (7, 1), (10, 1)],
-        vec![(6, 1)],
-        vec![(4, 1)],
-        vec![],
-        vec![(6, 1)],
-        vec![],
-      ]),
-      maze.into()
-    );
-  }
-
-  #[test]
   fn list_to_matrix() {
     assert_eq!(
-      MatrixGraph::from(vec![
+      MatrixGraph(vec![
         vec![None, Some(1), None, Some(3)],
         vec![Some(10), Some(1), None, None],
         vec![None, None, Some(5), None],
         vec![None, None, None, None],
       ]),
-      ListGraph::from(vec![
-        vec![(1, 1), (3, 3)],
-        vec![(0, 10), (1, 1)],
-        vec![(2, 5)],
+      MatrixGraph::from(ListGraph(vec![
+        vec![(0, 1, 1), (0, 3, 3)],
+        vec![(1, 0, 10), (1, 1, 1)],
+        vec![(2, 2, 5)],
         vec![],
-      ]).into()
+      ]))
     );
   }
 
   #[test]
   fn flat_to_matrix() {
     assert_eq!(
-      MatrixGraph::from(vec![
+      MatrixGraph(vec![
         vec![None, Some(1), None, Some(3)],
         vec![Some(10), Some(1), None, None],
         vec![None, None, Some(5), None],
         vec![None, None, None, None],
       ]),
-      FlatGraph::from((
+      MatrixGraph::from(FlatGraph(
         4,
         vec![(0, 1, 1), (0, 3, 3), (1, 0, 10), (1, 1, 1), (2, 2, 5)]
-      )).into()
+      ))
     );
   }
 
   #[test]
   fn data_to_list() {
     assert_eq!(
-      ListGraph::from(vec![
+      ListGraph(vec![
         vec![(0, 1, 1), (0, 3, 3)],
         vec![(1, 0, 10), (1, 1, 1)],
         vec![(2, 2, 5)],
@@ -240,32 +214,32 @@ mod tests {
   #[test]
   fn flat_to_list() {
     assert_eq!(
-      ListGraph::from(FlatGraph::from((
+      ListGraph(vec![
+        vec![(0, 1, 1), (0, 3, 3)],
+        vec![(1, 0, 10), (1, 1, 1)],
+        vec![(2, 2, 5)],
+        vec![],
+      ]),
+      ListGraph::from(FlatGraph(
         4,
         vec![(0, 1, 1), (0, 3, 3), (1, 0, 10), (1, 1, 1), (2, 2, 5)]
-      ))),
-      ListGraph::from(vec![
-        vec![(1, 1), (3, 3)],
-        vec![(0, 10), (1, 1)],
-        vec![(2, 5)],
-        vec![],
-      ])
+      ))
     );
   }
 
   #[test]
   fn list_to_flat() {
     assert_eq!(
-      FlatGraph::from(FlatGraph::from((
+      FlatGraph(
         4,
         vec![(0, 1, 1), (0, 3, 3), (1, 0, 10), (1, 1, 1), (2, 2, 5)]
-      ))),
-      ListGraph::from(vec![
-        vec![(1, 1), (3, 3)],
-        vec![(0, 10), (1, 1)],
-        vec![(2, 5)],
+      ),
+      FlatGraph::from(ListGraph(vec![
+        vec![(0, 1, 1), (0, 3, 3)],
+        vec![(1, 0, 10), (1, 1, 1)],
+        vec![(2, 2, 5)],
         vec![],
-      ]).into()
+      ]))
     );
   }
 
@@ -282,6 +256,31 @@ mod tests {
         vec![None, None, Some(5), None],
         vec![None, None, None, None],
       ]))
+    );
+  }
+
+  #[test]
+  fn maze_to_list() {
+    assert_eq!(
+      ListGraph(vec![
+        vec![(0, 4, 1)],
+        vec![],
+        vec![(2, 6, 1)],
+        vec![],
+        vec![(4, 0, 1), (4, 5, 1), (4, 8, 1)],
+        vec![(5, 4, 1), (5, 6, 1)],
+        vec![(6, 2, 1), (6, 5, 1), (6, 7, 1), (6, 10, 1)],
+        vec![(7, 6, 1)],
+        vec![(8, 4, 1)],
+        vec![],
+        vec![(10, 6, 1)],
+        vec![],
+      ]),
+      ListGraph::from(vec![
+        vec![true, false, true, false],
+        vec![true, true, true, true],
+        vec![true, false, true, false],
+      ])
     );
   }
 }
