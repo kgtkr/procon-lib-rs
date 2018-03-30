@@ -1,3 +1,5 @@
-use graph;
+use graph::FlatGraph;
 
-fn kruskal(graph: graph::ListGraph) {}
+fn kruskal(FlatGraph(len, mut edges): FlatGraph) {
+  edges.sort_by_key(|&(_, _, x)| x);
+}
