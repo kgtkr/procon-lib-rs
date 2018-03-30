@@ -218,4 +218,22 @@ mod tests {
       )).into()
     );
   }
+
+  #[test]
+  fn data_to_list() {
+    assert_eq!(
+      ListGraph::from(vec![
+        vec![(0, 1, 1), (0, 3, 3)],
+        vec![(1, 0, 10), (1, 1, 1)],
+        vec![(2, 2, 5)],
+        vec![],
+      ]),
+      ListGraph::from(vec![
+        vec![(1, 1), (3, 3)],
+        vec![(0, 10), (1, 1)],
+        vec![(2, 5)],
+        vec![],
+      ])
+    );
+  }
 }
