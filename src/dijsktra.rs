@@ -54,7 +54,7 @@ impl Dijsktra {
 
     while let Some(done_node) = heap.pop().map(|State { node, cost: _ }| node) {
       self.nodes[done_node].done = true;
-      for (edge_to, edge_cost) in self.nodes[done_node].edges.clone() {
+      for (_, edge_to, edge_cost) in self.nodes[done_node].edges.clone() {
         let cost = self.nodes[done_node].cost.unwrap() + edge_cost;
         if self.nodes[edge_to]
           .cost
@@ -117,7 +117,7 @@ mod tests {
       vec![],
     ];
 
-    let mut dij = Dijsktra::new(graph::ListGraph(graph));
+    let mut dij = Dijsktra::new(graph::ListGraph::new(graph));
 
     dij.dijsktra(0);
 

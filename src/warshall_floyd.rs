@@ -10,7 +10,7 @@ pub fn warshall_floyd(graph::ListGraph(nodes): graph::ListGraph) -> Vec<Vec<Opti
     vec.resize(len, vec2);
     for (node_id, node) in nodes.into_iter().enumerate() {
       vec[node_id][node_id] = Some(0);
-      for (edge_to, edge_cost) in node {
+      for (_, edge_to, edge_cost) in node {
         vec[node_id][edge_to] = Some(edge_cost);
       }
     }
@@ -50,7 +50,7 @@ mod tests {
       vec![(0, 7), (4, 2)],
       vec![],
     ];
-    let min = warshall_floyd(graph::ListGraph(graph));
+    let min = warshall_floyd(graph::ListGraph::new(graph));
 
     assert_eq!(
       min,

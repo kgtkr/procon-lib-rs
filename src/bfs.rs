@@ -17,7 +17,7 @@ pub fn bfs(
     n = queue[0];
     queue.remove(0);
     // 行けるノード
-    for &(next_node, _) in &graph[n] {
+    for &(_, next_node, _) in &graph[n] {
       if visited[next_node].is_none() {
         visited[next_node] = Some(n);
         // Queueに積む

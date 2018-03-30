@@ -4,15 +4,42 @@ pub type NodeId = usize;
 
 pub type Cost = i64;
 
+pub type MinMemListGraph = Vec<Vec<(NodeId, Cost)>>;
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct ListGraph(pub Vec<Node>);
 
 pub type Node = Vec<Edge>;
 
-pub type Edge = (NodeId, Cost);
+pub type Edge = (NodeId, NodeId, Cost);
+
+impl ListGraph {
+  pub fn new(data: MinMemListGraph) -> ListGraph {
+    ListGraph(
+      data
+        .into_iter()
+        .enumerate()
+        .map(|(from, edges)| {
+          edges
+            .into_iter()
+            .map(|(to, cost)| (from, to, cost))
+            .collect()
+        })
+        .collect(),
+    )
+  }
+
+  pub fn to_min_mem(self) -> MinMemListGraph {
+    self
+      .0
+      .into_iter()
+      .map(|edges| edges.into_iter().map(|(_, to, cost)| (to, cost)).collect())
+      .collect()
+  }
+}
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct FlatGraph(pub Vec<(NodeId, NodeId, Cost)>);
+pub struct FlatGraph(pub Vec<Edge>);
 
 //迷路
 #[derive(PartialEq, Debug, Clone)]
@@ -50,7 +77,7 @@ pub fn maze_to_graph(Maze(maze): Maze) -> ListGraph {
       }
     }
   }
-  ListGraph(graph)
+  ListGraph::new(graph)
 }
 
 #[cfg(test)]
@@ -65,7 +92,7 @@ mod tests {
       vec![true, false, true, false], //8-11
     ];
     assert_eq!(
-      ListGraph(vec![
+      vec![
         vec![(4, 1)],
         vec![],
         vec![(6, 1)],
@@ -78,8 +105,8 @@ mod tests {
         vec![],
         vec![(6, 1)],
         vec![],
-      ]),
-      maze_to_graph(Maze(maze))
+      ],
+      maze_to_graph(Maze(maze)).to_min_mem()
     );
   }
 }
