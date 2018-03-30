@@ -32,42 +32,42 @@ impl From<Vec<Vec<(NodeId, Cost)>>> for ListGraph {
 pub struct FlatGraph(pub Vec<Edge>);
 
 //迷路
-#[derive(PartialEq, Debug, Clone)]
-pub struct Maze(pub Vec<Vec<bool>>);
+pub type Maze = Vec<Vec<bool>>;
 
-//id=x+y*w
-pub fn maze_to_graph(Maze(maze): Maze) -> ListGraph {
-  if maze.len() == 0 {
-    return Vec::new().into();
-  }
+impl From<Maze> for ListGraph {
+  fn from(maze: Maze) -> ListGraph {
+    if maze.len() == 0 {
+      return ListGraph::from(Vec::<Vec<(NodeId, Cost)>>::new());
+    }
 
-  let h = maze.len();
-  let w = maze[0].len();
+    let h = maze.len();
+    let w = maze[0].len();
 
-  let mut graph = Vec::new();
-  for y in 0..h {
-    for x in 0..w {
-      if maze[y][x] {
-        let mut edges = Vec::new();
-        if y != 0 && maze[y - 1][x] {
-          edges.push((x + (y - 1) * w, 1));
+    let mut graph = Vec::new();
+    for y in 0..h {
+      for x in 0..w {
+        if maze[y][x] {
+          let mut edges = Vec::new();
+          if y != 0 && maze[y - 1][x] {
+            edges.push((x + (y - 1) * w, 1));
+          }
+          if x != 0 && maze[y][x - 1] {
+            edges.push(((x - 1) + y * w, 1));
+          }
+          if x != w - 1 && maze[y][x + 1] {
+            edges.push(((x + 1) + y * w, 1));
+          }
+          if y != h - 1 && maze[y + 1][x] {
+            edges.push((x + (y + 1) * w, 1));
+          }
+          graph.push(edges);
+        } else {
+          graph.push(Vec::new());
         }
-        if x != 0 && maze[y][x - 1] {
-          edges.push(((x - 1) + y * w, 1));
-        }
-        if x != w - 1 && maze[y][x + 1] {
-          edges.push(((x + 1) + y * w, 1));
-        }
-        if y != h - 1 && maze[y + 1][x] {
-          edges.push((x + (y + 1) * w, 1));
-        }
-        graph.push(edges);
-      } else {
-        graph.push(Vec::new());
       }
     }
+    ListGraph::from(graph)
   }
-  graph.into()
 }
 
 #[cfg(test)]
@@ -96,7 +96,7 @@ mod tests {
         vec![(6, 1)],
         vec![],
       ]),
-      maze_to_graph(Maze(maze)).into()
+      maze.into()
     );
   }
 }
