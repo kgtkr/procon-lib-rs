@@ -2,7 +2,7 @@ use graph;
 
 //graphは全てのコストが等しい
 pub fn bfs(
-  graph: &graph::Graph,
+  &graph::GraphFromNodes(ref graph): &graph::GraphFromNodes,
   start: graph::NodeId,
   goal: graph::NodeId,
 ) -> Option<Vec<graph::NodeId>> {

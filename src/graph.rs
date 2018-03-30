@@ -4,19 +4,20 @@ pub type NodeId = usize;
 
 pub type Cost = i64;
 
-pub type Graph = Vec<Node>;
+#[derive(PartialEq, Debug, Clone)]
+pub struct GraphFromNodes(pub Vec<NodeFrom>);
 
-pub type Node = Vec<Edge>;
+pub type NodeFrom = Vec<EdgeTo>;
 
-pub type Edge = (NodeId, Cost);
+pub type EdgeTo = (NodeId, Cost);
 
 //迷路
 pub type Maze = Vec<Vec<bool>>;
 
 //id=x+y*w
-pub fn maze_to_graph(maze: Maze) -> Graph {
+pub fn maze_to_graph(maze: Maze) -> GraphFromNodes {
   if maze.len() == 0 {
-    return Vec::new();
+    return GraphFromNodes(Vec::new());
   }
 
   let h = maze.len();
@@ -45,7 +46,7 @@ pub fn maze_to_graph(maze: Maze) -> Graph {
       }
     }
   }
-  graph
+  GraphFromNodes(graph)
 }
 
 #[cfg(test)]
@@ -60,7 +61,7 @@ mod tests {
       vec![true, false, true, false], //8-11
     ];
     assert_eq!(
-      vec![
+      GraphFromNodes(vec![
         vec![(4, 1)],
         vec![],
         vec![(6, 1)],
@@ -73,7 +74,7 @@ mod tests {
         vec![],
         vec![(6, 1)],
         vec![],
-      ],
+      ]),
       maze_to_graph(maze)
     );
   }
