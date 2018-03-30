@@ -202,4 +202,20 @@ mod tests {
       ]).into()
     );
   }
+
+  #[test]
+  fn flat_to_matrix() {
+    assert_eq!(
+      MatrixGraph::from(vec![
+        vec![None, Some(1), None, Some(3)],
+        vec![Some(10), Some(1), None, None],
+        vec![None, None, Some(5), None],
+        vec![None, None, None, None],
+      ]),
+      FlatGraph::from((
+        4,
+        vec![(0, 1, 1), (0, 3, 3), (1, 0, 10), (1, 1, 1), (2, 2, 5)]
+      )).into()
+    );
+  }
 }
