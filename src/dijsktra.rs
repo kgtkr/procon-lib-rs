@@ -52,13 +52,7 @@ impl Dijsktra {
     });
     self.nodes[start].set_start();
 
-    self.dijsktra_r(&mut heap);
-  }
-  //スタートのコストを0とすること
-  fn dijsktra_r(&mut self, heap: &mut BinaryHeap<State>) {
-    let done_node = heap.pop().map(|State { node, cost: _ }| node);
-
-    if let Some(done_node) = done_node {
+    while let Some(done_node) = heap.pop().map(|State { node, cost: _ }| node) {
       self.nodes[done_node].done = true;
       for (edge_to, edge_cost) in self.nodes[done_node].edges.clone() {
         let cost = self.nodes[done_node].cost.unwrap() + edge_cost;
@@ -75,8 +69,6 @@ impl Dijsktra {
           });
         }
       }
-
-      self.dijsktra_r(heap);
     }
   }
 
