@@ -236,4 +236,20 @@ mod tests {
       ])
     );
   }
+
+  #[test]
+  fn flat_to_list() {
+    assert_eq!(
+      ListGraph::from(FlatGraph::from((
+        4,
+        vec![(0, 1, 1), (0, 3, 3), (1, 0, 10), (1, 1, 1), (2, 2, 5)]
+      ))),
+      ListGraph::from(vec![
+        vec![(1, 1), (3, 3)],
+        vec![(0, 10), (1, 1)],
+        vec![(2, 5)],
+        vec![],
+      ])
+    );
+  }
 }
