@@ -69,4 +69,76 @@ mod tests {
       UnionFind::new(3)
     );
   }
+
+  #[test]
+  fn find() {
+    let mut uf = UnionFind(vec![
+      UnionFindNode { par: 0, rank: 0 },
+      UnionFindNode { par: 0, rank: 0 },
+      UnionFindNode { par: 1, rank: 0 },
+      UnionFindNode { par: 3, rank: 0 },
+      UnionFindNode { par: 4, rank: 0 },
+    ]);
+
+    {
+      let mut uf = uf.clone();
+      assert_eq!(0, uf.find(0));
+      assert_eq!(
+        UnionFind(vec![
+          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 1, rank: 0 },
+          UnionFindNode { par: 3, rank: 0 },
+          UnionFindNode { par: 4, rank: 0 },
+        ]),
+        uf
+      );
+    }
+
+    {
+      let mut uf = uf.clone();
+      assert_eq!(0, uf.find(1));
+      assert_eq!(
+        UnionFind(vec![
+          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 1, rank: 0 },
+          UnionFindNode { par: 3, rank: 0 },
+          UnionFindNode { par: 4, rank: 0 },
+        ]),
+        uf
+      );
+    }
+    {
+      let mut uf = uf.clone();
+      for _ in 0..2 {
+        assert_eq!(0, uf.find(2));
+        assert_eq!(
+          UnionFind(vec![
+            UnionFindNode { par: 0, rank: 0 },
+            UnionFindNode { par: 0, rank: 0 },
+            UnionFindNode { par: 0, rank: 0 },
+            UnionFindNode { par: 3, rank: 0 },
+            UnionFindNode { par: 4, rank: 0 },
+          ]),
+          uf
+        );
+      }
+    }
+
+    {
+      let mut uf = uf.clone();
+      assert_eq!(4, uf.find(4));
+      assert_eq!(
+        UnionFind(vec![
+          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 1, rank: 0 },
+          UnionFindNode { par: 3, rank: 0 },
+          UnionFindNode { par: 4, rank: 0 },
+        ]),
+        uf
+      );
+    }
+  }
 }
