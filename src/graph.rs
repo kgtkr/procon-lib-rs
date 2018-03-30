@@ -252,4 +252,36 @@ mod tests {
       ])
     );
   }
+
+  #[test]
+  fn list_to_flat() {
+    assert_eq!(
+      FlatGraph::from(FlatGraph::from((
+        4,
+        vec![(0, 1, 1), (0, 3, 3), (1, 0, 10), (1, 1, 1), (2, 2, 5)]
+      ))),
+      ListGraph::from(vec![
+        vec![(1, 1), (3, 3)],
+        vec![(0, 10), (1, 1)],
+        vec![(2, 5)],
+        vec![],
+      ]).into()
+    );
+  }
+
+  #[test]
+  fn mtrix_to_flat() {
+    assert_eq!(
+      FlatGraph(
+        4,
+        vec![(0, 1, 1), (0, 3, 3), (1, 0, 10), (1, 1, 1), (2, 2, 5)]
+      ),
+      FlatGraph::from(MatrixGraph(vec![
+        vec![None, Some(1), None, Some(3)],
+        vec![Some(10), Some(1), None, None],
+        vec![None, None, Some(5), None],
+        vec![None, None, None, None],
+      ]))
+    );
+  }
 }
