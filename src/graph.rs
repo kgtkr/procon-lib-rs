@@ -3,6 +3,38 @@ pub type NodeId = usize;
 pub type Cost = i64;
 
 #[derive(PartialEq, Debug, Clone)]
+pub struct MatrixGraph(pub Vec<Vec<Option<Cost>>>);
+
+impl From<Vec<Vec<Option<Cost>>>> for MatrixGraph {
+  fn from(data: Vec<Vec<Option<Cost>>>) -> MatrixGraph {
+    MatrixGraph(data)
+  }
+}
+
+impl From<ListGraph> for MatrixGraph {
+  fn from(graph: ListGraph) -> MatrixGraph {
+    FlatGraph::from(graph).into()
+  }
+}
+
+impl From<FlatGraph> for MatrixGraph {
+  fn from(FlatGraph(len, data): FlatGraph) -> MatrixGraph {
+    let mut vec = Vec::with_capacity(len);
+    vec.resize(len, {
+      let mut v = Vec::with_capacity(len);
+      v.resize(len, None);
+      v
+    });
+
+    for (from, to, cost) in data {
+      vec[from][to] = Some(cost);
+    }
+
+    vec.into()
+  }
+}
+
+#[derive(PartialEq, Debug, Clone)]
 pub struct ListGraph(pub Vec<Vec<Edge>>);
 
 pub type Node = Vec<Edge>;
@@ -39,6 +71,12 @@ impl From<FlatGraph> for ListGraph {
   }
 }
 
+impl From<MatrixGraph> for ListGraph {
+  fn from(graph: MatrixGraph) -> ListGraph {
+    FlatGraph::from(graph).into()
+  }
+}
+
 #[derive(PartialEq, Debug, Clone)]
 pub struct FlatGraph(usize, pub Vec<Edge>);
 
@@ -52,6 +90,23 @@ impl From<ListGraph> for FlatGraph {
 impl From<(usize, Vec<(NodeId, NodeId, Cost)>)> for FlatGraph {
   fn from((len, data): (usize, Vec<(NodeId, NodeId, Cost)>)) -> FlatGraph {
     FlatGraph(len, data)
+  }
+}
+
+impl From<MatrixGraph> for FlatGraph {
+  fn from(MatrixGraph(data): MatrixGraph) -> FlatGraph {
+    let mut vec = Vec::new();
+    let len = data.len();
+
+    for (from, v) in data.into_iter().enumerate() {
+      for (to, cost) in v.into_iter().enumerate() {
+        if let Some(cost) = cost {
+          vec.push((from, to, cost));
+        }
+      }
+    }
+
+    (len, vec).into()
   }
 }
 
