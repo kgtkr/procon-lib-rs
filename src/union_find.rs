@@ -53,3 +53,20 @@ impl UnionFind {
     self.find(x) == self.find(y)
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn new() {
+    assert_eq!(
+      UnionFind(vec![
+        UnionFindNode { par: 0, rank: 0 },
+        UnionFindNode { par: 1, rank: 0 },
+        UnionFindNode { par: 2, rank: 0 },
+      ]),
+      UnionFind::new(3)
+    );
+  }
+}
