@@ -26,18 +26,32 @@ impl From<Vec<Vec<(NodeId, Cost)>>> for ListGraph {
   }
 }
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct FlatGraph(pub Vec<Edge>);
+impl From<FlatGraph> for ListGraph {
+  fn from(FlatGraph(len, data): FlatGraph) -> ListGraph {
+    let mut vec = Vec::with_capacity(len);
+    vec.resize(len, Vec::new());
 
-impl From<ListGraph> for FlatGraph {
-  fn from(ListGraph(data): ListGraph) -> FlatGraph {
-    data.into_iter().flat_map(|x| x).collect::<Vec<_>>().into()
+    for (from, to, cost) in data {
+      vec[from].push((from, to, cost));
+    }
+
+    ListGraph(vec)
   }
 }
 
-impl From<Vec<(NodeId, NodeId, Cost)>> for FlatGraph {
-  fn from(data: Vec<(NodeId, NodeId, Cost)>) -> FlatGraph {
-    FlatGraph(data)
+#[derive(PartialEq, Debug, Clone)]
+pub struct FlatGraph(usize, pub Vec<Edge>);
+
+impl From<ListGraph> for FlatGraph {
+  fn from(ListGraph(data): ListGraph) -> FlatGraph {
+    let len = data.len();
+    (len, data.into_iter().flat_map(|x| x).collect::<Vec<_>>()).into()
+  }
+}
+
+impl From<(usize, Vec<(NodeId, NodeId, Cost)>)> for FlatGraph {
+  fn from((len, data): (usize, Vec<(NodeId, NodeId, Cost)>)) -> FlatGraph {
+    FlatGraph(len, data)
   }
 }
 
