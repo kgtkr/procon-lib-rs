@@ -43,13 +43,13 @@ mod tests {
 
   #[test]
   fn test1() {
-    let mut graph = graph::MinMemListGraph(vec![
+    let mut graph = vec![
       vec![(2, 10), (1, 1)],
       vec![(3, 2)],
       vec![(1, 1), (3, 3), (4, 1)],
       vec![(0, 7), (4, 2)],
       vec![],
-    ]);
+    ];
     let min = warshall_floyd(graph.into());
 
     assert_eq!(

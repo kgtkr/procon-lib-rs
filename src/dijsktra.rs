@@ -117,7 +117,7 @@ mod tests {
       vec![],
     ];
 
-    let mut dij = Dijsktra::new(graph::MinMemListGraph(graph).into());
+    let mut dij = Dijsktra::new(graph.into());
 
     dij.dijsktra(0);
 
