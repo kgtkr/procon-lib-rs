@@ -56,13 +56,21 @@ mod tests {
     //y*5+x
     assert_eq!(
       Some(vec![0, 5, 10, 15, 16, 17, 12, 7, 8, 9, 14, 19, 24]),
-      bfs(&graph::maze_to_graph(graph::Maze(maze.clone())), 0, 24)
+      bfs(
+        &graph::maze_to_graph(graph::Maze(maze.clone())).into(),
+        0,
+        24
+      )
     );
 
     maze[3][1] = false;
     assert_eq!(
       None,
-      bfs(&graph::maze_to_graph(graph::Maze(maze.clone())), 0, 24)
+      bfs(
+        &graph::maze_to_graph(graph::Maze(maze.clone())).into(),
+        0,
+        24
+      )
     );
   }
 }

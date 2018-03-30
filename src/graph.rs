@@ -4,7 +4,8 @@ pub type NodeId = usize;
 
 pub type Cost = i64;
 
-pub type MinMemListGraph = Vec<Vec<(NodeId, Cost)>>;
+#[derive(PartialEq, Debug, Clone)]
+pub struct MinMemListGraph(pub Vec<Vec<(NodeId, Cost)>>);
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct ListGraph(pub Vec<Node>);
@@ -13,8 +14,8 @@ pub type Node = Vec<Edge>;
 
 pub type Edge = (NodeId, NodeId, Cost);
 
-impl ListGraph {
-  pub fn new(data: MinMemListGraph) -> ListGraph {
+impl From<MinMemListGraph> for ListGraph {
+  fn from(MinMemListGraph(data): MinMemListGraph) -> ListGraph {
     ListGraph(
       data
         .into_iter()
@@ -28,13 +29,16 @@ impl ListGraph {
         .collect(),
     )
   }
+}
 
-  pub fn to_min_mem(self) -> MinMemListGraph {
-    self
-      .0
-      .into_iter()
-      .map(|edges| edges.into_iter().map(|(_, to, cost)| (to, cost)).collect())
-      .collect()
+impl From<ListGraph> for MinMemListGraph {
+  fn from(ListGraph(data): ListGraph) -> MinMemListGraph {
+    MinMemListGraph(
+      data
+        .into_iter()
+        .map(|edges| edges.into_iter().map(|(_, to, cost)| (to, cost)).collect())
+        .collect(),
+    )
   }
 }
 
@@ -46,9 +50,9 @@ pub struct FlatGraph(pub Vec<Edge>);
 pub struct Maze(pub Vec<Vec<bool>>);
 
 //id=x+y*w
-pub fn maze_to_graph(Maze(maze): Maze) -> ListGraph {
+pub fn maze_to_graph(Maze(maze): Maze) -> MinMemListGraph {
   if maze.len() == 0 {
-    return ListGraph(Vec::new());
+    return MinMemListGraph(Vec::new());
   }
 
   let h = maze.len();
@@ -77,7 +81,7 @@ pub fn maze_to_graph(Maze(maze): Maze) -> ListGraph {
       }
     }
   }
-  ListGraph::new(graph)
+  MinMemListGraph(graph)
 }
 
 #[cfg(test)]
@@ -92,7 +96,7 @@ mod tests {
       vec![true, false, true, false], //8-11
     ];
     assert_eq!(
-      vec![
+      MinMemListGraph(vec![
         vec![(4, 1)],
         vec![],
         vec![(6, 1)],
@@ -105,8 +109,8 @@ mod tests {
         vec![],
         vec![(6, 1)],
         vec![],
-      ],
-      maze_to_graph(Maze(maze)).to_min_mem()
+      ]),
+      maze_to_graph(Maze(maze)).into()
     );
   }
 }
