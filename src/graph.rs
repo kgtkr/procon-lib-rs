@@ -84,7 +84,7 @@ impl From<MatrixGraph> for ListGraph {
 }
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct FlatGraph(usize, pub Vec<Edge>);
+pub struct FlatGraph(pub usize, pub Vec<Edge>);
 
 impl From<ListGraph> for FlatGraph {
   fn from(ListGraph(data): ListGraph) -> FlatGraph {
