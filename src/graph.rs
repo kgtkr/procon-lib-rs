@@ -1,5 +1,3 @@
-//http://agtn.hatenablog.com/entry/2017/01/16/151745
-
 pub type NodeId = usize;
 
 pub type Cost = i64;
