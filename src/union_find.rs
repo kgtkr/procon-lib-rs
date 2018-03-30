@@ -141,4 +141,65 @@ mod tests {
       );
     }
   }
+
+  #[test]
+  fn unite() {
+    let mut uf = UnionFind(vec![
+      UnionFindNode { par: 0, rank: 0 },
+      UnionFindNode { par: 1, rank: 0 },
+      UnionFindNode { par: 2, rank: 0 },
+      UnionFindNode { par: 3, rank: 0 },
+      UnionFindNode { par: 4, rank: 0 },
+    ]);
+
+    uf.unite(2, 2);
+    assert_eq!(
+      UnionFind(vec![
+        UnionFindNode { par: 0, rank: 0 },
+        UnionFindNode { par: 1, rank: 0 },
+        UnionFindNode { par: 2, rank: 0 },
+        UnionFindNode { par: 3, rank: 0 },
+        UnionFindNode { par: 4, rank: 0 },
+      ]),
+      uf
+    );
+
+    for _ in 0..2 {
+      uf.unite(0, 1);
+      assert_eq!(
+        UnionFind(vec![
+          UnionFindNode { par: 0, rank: 1 },
+          UnionFindNode { par: 0, rank: 0 },
+          UnionFindNode { par: 2, rank: 0 },
+          UnionFindNode { par: 3, rank: 0 },
+          UnionFindNode { par: 4, rank: 0 },
+        ]),
+        uf
+      );
+    }
+
+    uf.unite(3, 1);
+    assert_eq!(
+      UnionFind(vec![
+        UnionFindNode { par: 0, rank: 1 },
+        UnionFindNode { par: 0, rank: 0 },
+        UnionFindNode { par: 2, rank: 0 },
+        UnionFindNode { par: 0, rank: 0 },
+        UnionFindNode { par: 4, rank: 0 },
+      ]),
+      uf
+    );
+
+    uf.unite(0, 4);
+    assert_eq!(
+      UnionFind(vec![
+        UnionFindNode { par: 0, rank: 1 },
+        UnionFindNode { par: 0, rank: 0 },
+        UnionFindNode { par: 2, rank: 0 },
+        UnionFindNode { par: 0, rank: 0 },
+        UnionFindNode { par: 0, rank: 0 },
+      ]),
+      uf
+    );
+  }
 }
