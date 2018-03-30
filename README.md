@@ -10,4 +10,11 @@
 
 ## 現在の機能
 
-未完成
+* bfs
+* upper_bound/lower_bound
+* Dijsktra
+* 入力値パースマクロ
+* 素数列挙(エラトステネスの篩)
+* union_find
+* warshall_floyd
+* グラフの相互変換
