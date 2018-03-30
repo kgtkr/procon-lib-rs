@@ -29,13 +29,25 @@ impl From<Vec<Vec<(NodeId, Cost)>>> for ListGraph {
 #[derive(PartialEq, Debug, Clone)]
 pub struct FlatGraph(pub Vec<Edge>);
 
+impl From<ListGraph> for FlatGraph {
+  fn from(ListGraph(data): ListGraph) -> FlatGraph {
+    data.into_iter().flat_map(|x| x).collect::<Vec<_>>().into()
+  }
+}
+
+impl From<Vec<(NodeId, NodeId, Cost)>> for FlatGraph {
+  fn from(data: Vec<(NodeId, NodeId, Cost)>) -> FlatGraph {
+    FlatGraph(data)
+  }
+}
+
 //迷路
 pub type Maze = Vec<Vec<bool>>;
 
 impl From<Maze> for ListGraph {
   fn from(maze: Maze) -> ListGraph {
     if maze.len() == 0 {
-      return ListGraph::from(Vec::<Vec<(NodeId, Cost)>>::new());
+      return Vec::<Vec<(NodeId, Cost)>>::new().into();
     }
 
     let h = maze.len();
@@ -64,7 +76,7 @@ impl From<Maze> for ListGraph {
         }
       }
     }
-    ListGraph::from(graph)
+    graph.into()
   }
 }
 
