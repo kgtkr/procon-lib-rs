@@ -12,6 +12,28 @@ pub fn lcm(a: i64, b: i64) -> i64 {
   a * b / gcd(a, b)
 }
 
+//拡張ユークリッド(参照版)
+pub fn extgcd_ref(a: i64, b: i64, x: &mut i64, y: &mut i64) -> i64 {
+  let mut d = a;
+  if b != 0 {
+    d = extgcd_ref(b, a % b, y, x);
+    *y -= (a / b) * *x;
+  } else {
+    *x = 1;
+    *y = 0;
+  }
+  d
+}
+
+//拡張ユークリッド
+//(gcd(a,b),x,y)
+pub fn extgcd(a: i64, b: i64) -> (i64, i64, i64) {
+  let mut x = 0;
+  let mut y = 0;
+  let gcd = extgcd_ref(a, b, &mut x, &mut y);
+  (gcd, x, y)
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
