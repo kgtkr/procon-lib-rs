@@ -13,23 +13,26 @@ pub fn divisor(n: usize) -> Vec<usize> {
 }
 
 //max以下の素数列挙
-pub fn prime_sieve(max: usize) -> Vec<usize> {
-  let sqrt_max = (max as f64).sqrt();
-  let mut prime_list = Vec::new();
+pub fn prime_sieve(n: usize) -> (Vec<usize>, Vec<bool>) {
+  let mut prime = Vec::new();
+  let mut is_prime = Vec::with_capacity(n + 1);
+  is_prime.resize(n + 1, true);
+  is_prime[0] = false;
+  is_prime[1] = false;
+  for i in 2..n + 1 {
+    if is_prime[i] {
+      prime.push(i);
+      {
+        let mut j = 2 * i;
+        while j <= n {
+          is_prime[j] = false;
+          j += i;
+        }
+      }
+    }
+  }
 
-  let mut search_list = (2..max + 1).collect::<Vec<_>>();
-
-  while {
-    let prime = search_list[0];
-    prime_list.push(prime);
-    search_list = search_list.into_iter().filter(|n| n % prime != 0).collect();
-
-    (prime as f64) < sqrt_max
-  } {}
-
-  prime_list.append(&mut search_list);
-
-  prime_list
+  (prime, is_prime)
 }
 
 #[cfg(test)]
@@ -38,8 +41,24 @@ mod tests {
 
   #[test]
   fn test_prime() {
-    assert_eq!(vec![2, 3, 5, 7], prime_sieve(10));
-    assert_eq!(vec![2, 3, 5, 7, 11], prime_sieve(11));
+    assert_eq!(
+      (
+        vec![2, 3, 5, 7],
+        vec![
+          false, false, true, true, false, true, false, true, false, false, false
+        ]
+      ),
+      prime_sieve(10)
+    );
+    assert_eq!(
+      (
+        vec![2, 3, 5, 7, 11],
+        vec![
+          false, false, true, true, false, true, false, true, false, false, false, true
+        ]
+      ),
+      prime_sieve(11)
+    );
   }
 
   #[test]
