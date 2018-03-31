@@ -1,7 +1,7 @@
 use graph::FlatGraph;
 use union_find::UnionFind;
 
-fn kruskal(FlatGraph(node_len, mut edges): FlatGraph) -> FlatGraph {
+pub fn kruskal(FlatGraph(node_len, mut edges): FlatGraph) -> FlatGraph {
   edges.sort_by(|&(_, _, ref a), &(_, _, ref b)| a.cmp(b));
   let mut uf = UnionFind::new(node_len);
   let mut res = FlatGraph(node_len, Vec::new());
