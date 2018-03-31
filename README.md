@@ -19,3 +19,4 @@
 * warshall_floyd
 * グラフの相互変換
 * kruskal
+* gcd/lcm/extgcd_ref
