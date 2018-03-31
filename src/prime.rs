@@ -38,12 +38,12 @@ pub fn prime_sieve(n: usize) -> (Vec<usize>, Vec<bool>) {
 }
 
 //素数判定
-fn is_prime(n: i64) -> bool {
+pub fn is_prime(n: i64) -> bool {
   n != 1 && (2..).take_while(|i| i * i <= n).all(|i| n % i != 0)
 }
 
 //素因数分解
-fn prime_factor(mut n: i64) -> HashMap<i64, i64> {
+pub fn prime_factor(mut n: i64) -> HashMap<i64, i64> {
   let mut res: HashMap<i64, i64> = HashMap::new();
   let mut i = 2;
   while i * i <= n {
