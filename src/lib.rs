@@ -7,3 +7,4 @@ pub mod prime;
 pub mod parser;
 pub mod kruskal;
 pub mod union_find;
+pub mod math;
