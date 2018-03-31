@@ -14,9 +14,9 @@
 * upper_bound/lower_bound
 * dijsktra
 * 入力値パースマクロ
-* 素数列挙(エラトステネスの篩)
+* 素数列挙/素数判定/約数列挙/素因数分解
 * union_find
 * warshall_floyd
 * グラフの相互変換
 * kruskal
-* gcd/lcm/extgcd_ref
+* gcd/lcm/extgcd
