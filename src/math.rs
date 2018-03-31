@@ -50,4 +50,10 @@ mod tests {
     assert_eq!(1873326, lcm(182, 10293));
     assert_eq!(66356, lcm(212, 313));
   }
+
+  #[test]
+  fn test_extgcd() {
+    assert_eq!((1, -7, 12), extgcd(29, 17));
+    assert_eq!((12, -7, 18), extgcd(924, 360));
+  }
 }
