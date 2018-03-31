@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 //nの約数列挙
 pub fn divisor(n: usize) -> Vec<usize> {
   let mut res = Vec::new();
@@ -35,6 +37,32 @@ pub fn prime_sieve(n: usize) -> (Vec<usize>, Vec<bool>) {
   (prime, is_prime)
 }
 
+//素数判定
+fn is_prime(n: i64) -> bool {
+  n != 1 && (2..).take_while(|i| i * i <= n).all(|i| n % i != 0)
+}
+
+//素因数分解
+fn prime_factor(mut n: i64) -> HashMap<i64, i64> {
+  let mut res: HashMap<i64, i64> = HashMap::new();
+  let mut i = 2;
+  while i * i <= n {
+    while n % i == 0 {
+      let v = match res.get(&i) {
+        Some(v) => *v + 1,
+        None => 1,
+      };
+      res.insert(i, v);
+      n /= i;
+    }
+    i += 1;
+  }
+  if n != 1 {
+    res.insert(n, 1);
+  }
+  res
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -69,5 +97,69 @@ mod tests {
       divisor(150)
     );
     assert_eq!(vec![1, 9, 3], divisor(9));
+  }
+
+  #[test]
+  fn test_is_prime() {
+    assert_eq!(false, is_prime(1));
+    assert_eq!(true, is_prime(2));
+    assert_eq!(true, is_prime(3));
+    assert_eq!(false, is_prime(4));
+    assert_eq!(false, is_prime(9));
+    assert_eq!(true, is_prime(11));
+  }
+
+  #[test]
+  fn test_prime_factor() {
+    assert_eq!(HashMap::new(), prime_factor(1));
+
+    assert_eq!(
+      {
+        let mut map = HashMap::new();
+        map.insert(2, 1);
+        map
+      },
+      prime_factor(2)
+    );
+
+    assert_eq!(
+      {
+        let mut map = HashMap::new();
+        map.insert(3, 1);
+        map
+      },
+      prime_factor(3)
+    );
+
+    assert_eq!(
+      {
+        let mut map = HashMap::new();
+        map.insert(2, 1);
+        map.insert(5, 1);
+        map
+      },
+      prime_factor(10)
+    );
+
+    assert_eq!(
+      {
+        let mut map = HashMap::new();
+        map.insert(2, 1);
+        map.insert(5, 1);
+        map
+      },
+      prime_factor(10)
+    );
+
+    assert_eq!(
+      {
+        let mut map = HashMap::new();
+        map.insert(2, 3);
+        map.insert(3, 2);
+        map.insert(5, 1);
+        map
+      },
+      prime_factor(360)
+    );
   }
 }
