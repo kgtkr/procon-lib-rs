@@ -55,11 +55,22 @@ mod tests {
     ]);
     //y*5+x
     assert_eq!(
-      Some(vec![0, 5, 10, 15, 16, 17, 12, 7, 8, 9, 14, 19, 24]),
-      bfs(&maze.clone().into(), 0, 24)
+      Some(vec![0, 3, 7, 10, 11, 12, 8, 4, 5, 6, 9, 13, 16]),
+      bfs(
+        &graph::ListGraph::from(graph::MazeID::from(maze.clone())),
+        0,
+        16
+      )
     );
 
     maze.0[3][1] = false;
-    assert_eq!(None, bfs(&maze.clone().into(), 0, 24));
+    assert_eq!(
+      None,
+      bfs(
+        &graph::ListGraph::from(graph::MazeID::from(maze.clone())),
+        0,
+        16
+      )
+    );
   }
 }

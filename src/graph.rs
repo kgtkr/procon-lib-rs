@@ -118,6 +118,47 @@ impl From<MatrixGraph> for FlatGraph {
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct MazeID(pub Vec<Vec<Option<usize>>>);
+impl From<MazeID> for ListGraph {
+  fn from(MazeID(maze): MazeID) -> ListGraph {
+    if maze.len() == 0 {
+      return ListGraph(Vec::new());
+    }
+
+    let h = maze.len();
+    let w = maze[0].len();
+
+    let mut graph = Vec::new();
+    for y in 0..h {
+      for x in 0..w {
+        if let Some(_) = maze[y][x] {
+          let mut edges = Vec::new();
+          if y != 0 {
+            if let Some(to) = maze[y - 1][x] {
+              edges.push((to, 1));
+            }
+          }
+          if x != 0 {
+            if let Some(to) = maze[y][x - 1] {
+              edges.push((to, 1));
+            }
+          }
+          if x != w - 1 {
+            if let Some(to) = maze[y][x + 1] {
+              edges.push((to, 1));
+            }
+          }
+          if y != h - 1 {
+            if let Some(to) = maze[y + 1][x] {
+              edges.push((to, 1));
+            }
+          }
+          graph.push(edges);
+        }
+      }
+    }
+    ListGraph::from(graph)
+  }
+}
 
 //迷路
 #[derive(PartialEq, Debug, Clone)]
@@ -145,42 +186,6 @@ impl From<Maze> for MazeID {
         })
         .collect::<Vec<_>>(),
     )
-  }
-}
-
-impl From<Maze> for ListGraph {
-  fn from(Maze(maze): Maze) -> ListGraph {
-    if maze.len() == 0 {
-      return Vec::<Vec<(NodeId, Cost)>>::new().into();
-    }
-
-    let h = maze.len();
-    let w = maze[0].len();
-
-    let mut graph = Vec::new();
-    for y in 0..h {
-      for x in 0..w {
-        if maze[y][x] {
-          let mut edges = Vec::new();
-          if y != 0 && maze[y - 1][x] {
-            edges.push((x + (y - 1) * w, 1));
-          }
-          if x != 0 && maze[y][x - 1] {
-            edges.push(((x - 1) + y * w, 1));
-          }
-          if x != w - 1 && maze[y][x + 1] {
-            edges.push(((x + 1) + y * w, 1));
-          }
-          if y != h - 1 && maze[y + 1][x] {
-            edges.push((x + (y + 1) * w, 1));
-          }
-          graph.push(edges);
-        } else {
-          graph.push(Vec::new());
-        }
-      }
-    }
-    graph.into()
   }
 }
 
@@ -289,27 +294,23 @@ mod tests {
   }
 
   #[test]
-  fn maze_to_list() {
+  fn maze_id_to_list() {
     assert_eq!(
       ListGraph(vec![
-        vec![(0, 4, 1)],
-        vec![],
-        vec![(2, 6, 1)],
-        vec![],
-        vec![(4, 0, 1), (4, 5, 1), (4, 8, 1)],
-        vec![(5, 4, 1), (5, 6, 1)],
-        vec![(6, 2, 1), (6, 5, 1), (6, 7, 1), (6, 10, 1)],
-        vec![(7, 6, 1)],
-        vec![(8, 4, 1)],
-        vec![],
-        vec![(10, 6, 1)],
-        vec![],
+        vec![(0, 2, 1)],
+        vec![(1, 4, 1)],
+        vec![(2, 0, 1), (2, 3, 1), (2, 6, 1)],
+        vec![(3, 2, 1), (3, 4, 1)],
+        vec![(4, 1, 1), (4, 3, 1), (4, 5, 1), (4, 7, 1)],
+        vec![(5, 4, 1)],
+        vec![(6, 2, 1)],
+        vec![(7, 4, 1)],
       ]),
-      ListGraph::from(Maze(vec![
+      ListGraph::from(MazeID::from(Maze(vec![
         vec![true, false, true, false],
         vec![true, true, true, true],
         vec![true, false, true, false],
-      ]))
+      ])))
     );
   }
 
