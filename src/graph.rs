@@ -312,4 +312,20 @@ mod tests {
       ]))
     );
   }
+
+  #[test]
+  fn maze_to_maze_id() {
+    assert_eq!(
+      MazeID(vec![
+        vec![Some(0), None, Some(1), None],
+        vec![Some(2), Some(3), Some(4), Some(5)],
+        vec![Some(6), None, Some(7), None],
+      ]),
+      MazeID::from(Maze(vec![
+        vec![true, false, true, false],
+        vec![true, true, true, true],
+        vec![true, false, true, false],
+      ]))
+    );
+  }
 }
