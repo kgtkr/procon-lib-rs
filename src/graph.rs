@@ -116,11 +116,40 @@ impl From<MatrixGraph> for FlatGraph {
   }
 }
 
+#[derive(PartialEq, Debug, Clone)]
+pub struct MazeID(pub Vec<Vec<Option<usize>>>);
+
 //迷路
-pub type Maze = Vec<Vec<bool>>;
+#[derive(PartialEq, Debug, Clone)]
+pub struct Maze(pub Vec<Vec<bool>>);
+
+impl From<Maze> for MazeID {
+  fn from(Maze(maze): Maze) -> MazeID {
+    let mut id = 0;
+    MazeID(
+      maze
+        .into_iter()
+        .map(|vec| {
+          vec
+            .into_iter()
+            .map(|x| {
+              if x {
+                let res: Option<usize> = Some(id);
+                id += 1;
+                res
+              } else {
+                None
+              }
+            })
+            .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>(),
+    )
+  }
+}
 
 impl From<Maze> for ListGraph {
-  fn from(maze: Maze) -> ListGraph {
+  fn from(Maze(maze): Maze) -> ListGraph {
     if maze.len() == 0 {
       return Vec::<Vec<(NodeId, Cost)>>::new().into();
     }
@@ -276,11 +305,11 @@ mod tests {
         vec![(10, 6, 1)],
         vec![],
       ]),
-      ListGraph::from(vec![
+      ListGraph::from(Maze(vec![
         vec![true, false, true, false],
         vec![true, true, true, true],
         vec![true, false, true, false],
-      ])
+      ]))
     );
   }
 }

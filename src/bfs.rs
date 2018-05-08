@@ -46,20 +46,20 @@ mod tests {
 
   #[test]
   fn test1() {
-    let mut maze = vec![
+    let mut maze = graph::Maze(vec![
       vec![true, false, true, false, true],
       vec![true, false, true, true, true],
       vec![true, false, true, false, true],
       vec![true, true, true, false, true],
       vec![true, false, true, false, true],
-    ];
+    ]);
     //y*5+x
     assert_eq!(
       Some(vec![0, 5, 10, 15, 16, 17, 12, 7, 8, 9, 14, 19, 24]),
       bfs(&maze.clone().into(), 0, 24)
     );
 
-    maze[3][1] = false;
+    maze.0[3][1] = false;
     assert_eq!(None, bfs(&maze.clone().into(), 0, 24));
   }
 }
