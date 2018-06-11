@@ -1,5 +1,6 @@
-//-1
 //累積和
+//char2id
+//id2char
 
 pub fn diff_seq(v: Vec<i64>) -> Vec<i64> {
   v.clone()
@@ -12,6 +13,15 @@ pub fn diff_seq(v: Vec<i64>) -> Vec<i64> {
 
 pub fn one_base_to_zero_base(v: Vec<usize>) -> Vec<usize> {
   v.into_iter().map(|x| x - 1).collect()
+}
+
+pub fn sum_seq(v: Vec<i64>) -> Vec<i64> {
+  v.into_iter()
+    .scan(0, |state, x| {
+      *state = *state + x;
+      Some(*state)
+    })
+    .collect()
 }
 
 #[cfg(test)]
@@ -29,5 +39,10 @@ mod tests {
       vec![0, 1, 3, 1, 2],
       one_base_to_zero_base(vec![1, 2, 4, 2, 3])
     );
+  }
+
+  #[test]
+  fn sum_seq_test() {
+    assert_eq!(vec![1, 1, 3, 7, 9, 12], sum_seq(vec![1, 0, 2, 4, 2, 3]));
   }
 }
