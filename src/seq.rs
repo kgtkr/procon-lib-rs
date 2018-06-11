@@ -1,4 +1,3 @@
-//累積和
 //char2id
 //id2char
 
@@ -31,6 +30,7 @@ mod tests {
   #[test]
   fn diff_seq_test() {
     assert_eq!(vec![-9, 1, 0, 1], diff_seq(vec![10, 1, 2, 2, 3]));
+    assert_eq!(vec![] as Vec<i64>, diff_seq(vec![10]));
   }
 
   #[test]
