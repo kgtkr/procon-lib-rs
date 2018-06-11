@@ -39,10 +39,12 @@ mod tests {
       vec![0, 1, 3, 1, 2],
       one_base_to_zero_base(vec![1, 2, 4, 2, 3])
     );
+    assert_eq!(vec![] as Vec<usize>, one_base_to_zero_base(vec![]));
   }
 
   #[test]
   fn sum_seq_test() {
     assert_eq!(vec![1, 1, 3, 7, 9, 12], sum_seq(vec![1, 0, 2, 4, 2, 3]));
+    assert_eq!(vec![] as Vec<i64>, sum_seq(vec![]));
   }
 }
