@@ -1,6 +1,3 @@
-//char2id
-//id2char
-
 pub fn diff_seq(v: Vec<i64>) -> Vec<i64> {
   v.clone()
     .into_iter()

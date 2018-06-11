@@ -7,5 +7,6 @@ pub mod kruskal;
 pub mod parser;
 pub mod prime;
 pub mod seq;
+pub mod text;
 pub mod union_find;
 pub mod warshall_floyd;
