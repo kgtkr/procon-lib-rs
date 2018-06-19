@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub fn diff_seq(v: Vec<i64>) -> Vec<i64> {
   v.clone()
     .into_iter()
@@ -18,6 +20,14 @@ pub fn sum_seq(v: Vec<i64>) -> Vec<i64> {
       Some(*state)
     })
     .collect()
+}
+
+pub fn map_add(map: &mut HashMap<i64, i64>, key: i64, add: i64) {
+  let v = match map.get(&key) {
+    Some(v) => *v + add,
+    None => add,
+  };
+  map.insert(key, v);
 }
 
 #[cfg(test)]
@@ -43,5 +53,52 @@ mod tests {
   fn sum_seq_test() {
     assert_eq!(vec![1, 1, 3, 7, 9, 12], sum_seq(vec![1, 0, 2, 4, 2, 3]));
     assert_eq!(vec![] as Vec<i64>, sum_seq(vec![]));
+  }
+
+  #[test]
+  fn map_add_test() {
+    let mut map = HashMap::new();
+    map_add(&mut map, 0, 1);
+    assert_eq!(
+      {
+        let mut v = HashMap::new();
+        v.insert(0, 1);
+        v
+      },
+      map
+    );
+
+    map_add(&mut map, 0, 1);
+    assert_eq!(
+      {
+        let mut v = HashMap::new();
+        v.insert(0, 2);
+        v
+      },
+      map
+    );
+
+    map_add(&mut map, 10, 5);
+    assert_eq!(
+      {
+        let mut v = HashMap::new();
+        v.insert(0, 2);
+        v.insert(10, 5);
+        v
+      },
+      map
+    );
+
+    map_add(&mut map, 8, 0);
+    assert_eq!(
+      {
+        let mut v = HashMap::new();
+        v.insert(0, 2);
+        v.insert(10, 5);
+        v.insert(8, 0);
+        v
+      },
+      map
+    );
   }
 }
