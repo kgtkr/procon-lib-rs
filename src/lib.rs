@@ -6,6 +6,7 @@ pub mod graph;
 pub mod kruskal;
 pub mod parser;
 pub mod prime;
+pub mod rmq;
 pub mod seq;
 pub mod text;
 pub mod union_find;
