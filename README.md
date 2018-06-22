@@ -22,3 +22,5 @@
 * gcd/lcm/extgcd
 * 文字列便利関数
 * 数列便利関数
+* rmq
+* ford_fulkerson
