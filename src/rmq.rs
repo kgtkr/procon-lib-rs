@@ -1,6 +1,7 @@
 //蟻本
 use std::cmp::min;
 
+#[derive(PartialEq, Debug, Clone)]
 struct RMQ(pub Vec<i64>);
 
 impl RMQ {
@@ -43,5 +44,22 @@ impl RMQ {
 
   pub fn query(&self, a: usize, b: usize) -> i64 {
     self.query_f(a, b, 0, 0, self.len())
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn test1() {
+    let mut rmq = RMQ::new(6);
+    rmq.update(1, 3);
+    rmq.update(5, 10);
+    assert_eq!(rmq.query(0, 1), <i64>::max_value());
+    assert_eq!(rmq.query(2, 5), <i64>::max_value());
+    assert_eq!(rmq.query(2, 6), 10);
+    assert_eq!(rmq.query(1, 5), 3);
+    assert_eq!(rmq.query(1, 6), 3);
   }
 }
