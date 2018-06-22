@@ -73,6 +73,28 @@ impl FordFulkerson {
   }
 }
 
+pub fn max_match(a: usize, b: usize, path: Vec<(usize, usize)>) -> i64 {
+  //スタート、グループa、グループb、ゴール
+  let mut flow = FordFulkerson::new(a + b + 2);
+
+  //スタートとaを結ぶ
+  for i in 1..a + 1 {
+    flow.add_edge(0, i, 1);
+  }
+
+  //aとbを結ぶ
+  for (x, y) in path {
+    flow.add_edge(x + 1, y + a + 1, 1);
+  }
+
+  //bとゴールを結ぶ
+  for i in a + 1..a + b + 1 {
+    flow.add_edge(i, a + b + 1, 1);
+  }
+
+  flow.max_flow(0, a + b + 1)
+}
+
 mod tests {
   use super::*;
 
@@ -87,5 +109,17 @@ mod tests {
     flow.add_edge(3, 2, 3);
     flow.add_edge(3, 4, 8);
     assert_eq!(11, flow.max_flow(0, 4));
+  }
+
+  #[test]
+  fn test2() {
+    assert_eq!(
+      3,
+      max_match(3, 3, vec![(0, 0), (0, 1), (1, 0), (1, 2), (2, 1)])
+    );
+    assert_eq!(
+      2,
+      max_match(3, 4, vec![(0, 0), (0, 1), (0, 2), (0, 3), (1, 0), (2, 0)])
+    );
   }
 }
