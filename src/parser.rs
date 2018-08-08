@@ -21,18 +21,18 @@ macro_rules! line_parse {
 }
 
 macro_rules! value_def {
-  ($line:expr,$name:ident,$t:tt) => {
-    let $name=value!($line,$t);
+  ($line:expr, $name:ident, $t:tt) => {
+    let $name = value!($line, $t);
   };
 }
 
 macro_rules! values_def {
-  ($lines:expr,$n:expr,$name:ident,$t:tt) => {
-    let $name={
-      let mut vec=Vec::new();
-      for i in 0..$n{
-        let mut next=$lines.next().unwrap().split_whitespace();
-        vec.push(value!(next,$t));
+  ($lines:expr, $n:expr, $name:ident, $t:tt) => {
+    let $name = {
+      let mut vec = Vec::new();
+      for i in 0..$n {
+        let mut next = $lines.next().unwrap().split_whitespace();
+        vec.push(value!(next, $t));
       }
       vec
     };
@@ -58,6 +58,10 @@ macro_rules! value {
   //単一値
   ($line:expr,$t:ty) => {
     $line.next().unwrap().parse::<$t>().unwrap()
+  };
+  //インデックス(-1)
+  ($line:expr,@) => {
+    $line.next().unwrap().parse::<usize>().unwrap()-1
   };
 }
 
@@ -114,6 +118,7 @@ fn test1() {
 2 3
 4 1
 1283 23 43 32
+1 2
 "=>
     (n:usize) //単一値
     (k:# p:#) //複数値
@@ -122,6 +127,7 @@ fn test1() {
     (tup:(#,#)) //タプル
     {n;list3:(#,#)}
     (i:# list4:[#])
+    (index:[@])
   );
     assert_eq!(n, 3);
     assert_eq!(k, "5");
@@ -132,5 +138,6 @@ fn test1() {
     assert_eq!(list3, vec![("8", "1"), ("2", "3"), ("4", "1")]);
     assert_eq!(i, "1283");
     assert_eq!(list4, vec!["23", "43", "32"]);
+    assert_eq!(index, vec![0, 1]);
   }
 }
