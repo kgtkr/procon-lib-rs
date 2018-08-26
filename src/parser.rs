@@ -55,13 +55,13 @@ macro_rules! value {
   ($line:expr,#) => {
     $line.next().unwrap()
   };
-  //単一値
-  ($line:expr,$t:ty) => {
-    $line.next().unwrap().parse::<$t>().unwrap()
-  };
   //インデックス(-1)
   ($line:expr,@) => {
     $line.next().unwrap().parse::<usize>().unwrap()-1
+  };
+  //単一値
+  ($line:expr,$t:ty) => {
+    $line.next().unwrap().parse::<$t>().unwrap()
   };
 }
 
