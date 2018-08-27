@@ -38,6 +38,22 @@ pub fn sum_seq_2d(mut vec: Vec<Vec<i64>>) -> Vec<Vec<i64>> {
   vec
 }
 
+pub fn sum_seq_2d_rect(
+  sum_vec: &Vec<Vec<i64>>,
+  (x1, y1): (usize, usize),
+  (x2, y2): (usize, usize),
+) -> i64 {
+  sum_vec[x2][y2] + (if x1 != 0 && y1 != 0 {
+    sum_vec[x1 - 1][y1 - 1]
+  } else {
+    0
+  }) - (if x1 != 0 { sum_vec[x1 - 1][y2] } else { 0 }) - (if y1 != 0 {
+    sum_vec[x2][y1 - 1]
+  } else {
+    0
+  })
+}
+
 pub fn map_add(map: &mut HashMap<i64, i64>, key: i64, add: i64) {
   let v = match map.get(&key) {
     Some(v) => *v + add,
@@ -78,6 +94,16 @@ mod tests {
       vec![vec![1, 3], vec![1, 13], vec![3, 18], vec![13, 28]],
       sum_seq_2d(vec![vec![1, 2], vec![0, 10], vec![2, 3], vec![10, 0]])
     );
+  }
+
+  #[test]
+  fn sum_seq_2d_rect_test() {
+    let sum = sum_seq_2d(vec![vec![1, 2], vec![0, 10], vec![2, 3], vec![10, 0]]);
+    assert_eq!(1, sum_seq_2d_rect(&sum, (0, 0), (0, 0)));
+    assert_eq!(0, sum_seq_2d_rect(&sum, (1, 0), (1, 0)));
+    assert_eq!(2, sum_seq_2d_rect(&sum, (0, 1), (0, 1)));
+    assert_eq!(28, sum_seq_2d_rect(&sum, (0, 0), (3, 1)));
+    assert_eq!(13, sum_seq_2d_rect(&sum, (1, 1), (3, 1)));
   }
 
   #[test]
