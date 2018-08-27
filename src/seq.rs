@@ -22,6 +22,22 @@ pub fn sum_seq(v: Vec<i64>) -> Vec<i64> {
     .collect()
 }
 
+pub fn sum_seq_2d(mut vec: Vec<Vec<i64>>) -> Vec<Vec<i64>> {
+  for i in 0..vec.len() {
+    for j in 0..vec[0].len() {
+      vec[i][j] += if j != 0 { vec[i][j - 1] } else { 0 };
+    }
+  }
+
+  for i in 0..vec.len() {
+    for j in 0..vec[0].len() {
+      vec[i][j] += if i != 0 { vec[i - 1][j] } else { 0 };
+    }
+  }
+
+  vec
+}
+
 pub fn map_add(map: &mut HashMap<i64, i64>, key: i64, add: i64) {
   let v = match map.get(&key) {
     Some(v) => *v + add,
@@ -53,6 +69,15 @@ mod tests {
   fn sum_seq_test() {
     assert_eq!(vec![1, 1, 3, 7, 9, 12], sum_seq(vec![1, 0, 2, 4, 2, 3]));
     assert_eq!(vec![] as Vec<i64>, sum_seq(vec![]));
+  }
+
+  #[test]
+  fn sum_seq_2d_test() {
+    assert_eq!(vec![] as Vec<Vec<i64>>, sum_seq_2d(vec![]));
+    assert_eq!(
+      vec![vec![1, 3], vec![1, 13], vec![3, 18], vec![13, 28]],
+      sum_seq_2d(vec![vec![1, 2], vec![0, 10], vec![2, 3], vec![10, 0]])
+    );
   }
 
   #[test]
