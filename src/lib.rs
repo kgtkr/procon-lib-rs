@@ -6,6 +6,7 @@ pub mod gcd;
 pub mod graph;
 pub mod kruskal;
 pub mod maxmin;
+pub mod mod_calc;
 pub mod parser;
 pub mod prime;
 pub mod rmq;
