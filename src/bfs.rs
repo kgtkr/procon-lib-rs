@@ -9,12 +9,11 @@ pub fn bfs(
   let mut visited = Vec::with_capacity(graph.len());
   visited.resize(graph.len(), None);
 
-  let mut n = 0;
   // Queue に初期値を積む
-  let mut queue = vec![n];
+  let mut queue = vec![start];
   while queue.len() > 0 {
     // queueから取り出す
-    n = queue[0];
+    let n = queue[0];
     queue.remove(0);
     // 行けるノード
     for &(_, next_node, _) in &graph[n] {
@@ -60,6 +59,15 @@ mod tests {
         &graph::ListGraph::from(graph::MazeID::from(maze.clone())),
         0,
         16
+      )
+    );
+
+    assert_eq!(
+      Some(vec![16, 13, 9, 6, 5, 4, 8, 12, 11, 10, 7, 3, 0]),
+      bfs(
+        &graph::ListGraph::from(graph::MazeID::from(maze.clone())),
+        16,
+        0
       )
     );
 
